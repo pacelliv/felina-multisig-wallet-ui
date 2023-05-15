@@ -20,6 +20,8 @@ const Web3ContextProvider = ({ children }) => {
 
     const network = chainId === 31337 ? "localhost" : "sepolia"
 
+    const confirmations = chainId === 31337 ? 1 : 3
+
     const contractAddress =
         chainId in walletContractAddresses
             ? walletContractAddresses[chainId][0]
@@ -56,6 +58,7 @@ const Web3ContextProvider = ({ children }) => {
                 chainId,
                 chainIdHex,
                 network,
+                confirmations,
                 contractAddress,
                 provider,
                 wallet,
