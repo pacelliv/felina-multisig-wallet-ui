@@ -1,30 +1,32 @@
 {
     "tokensDetails": [
         {
-            "id": "true-usd",
-            "symbol": "tusd",
-            "name": "TrueUSD",
+            "id": "usd-coin",
+            "symbol": "usdc",
+            "name": "USD Coin",
             "image": {
-                "thumb": "https://assets.coingecko.com/coins/images/3449/thumb/tusd.png?1618395665",
-                "small": "https://assets.coingecko.com/coins/images/3449/small/tusd.png?1618395665"
+                "thumb": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+                "small": "https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
             },
             "tokenBalance": "0",
             "contract_addresses": {
-                "localhost": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+                "localhost": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+                "sepolia": "0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f"
             },
             "decimal_place": "18"
         },
         {
-            "id": "shiba-inu",
-            "symbol": "shib",
-            "name": "Shiba Inu",
+            "id": "wrapped-bitcoin",
+            "symbol": "wbtc",
+            "name": "Wrapped Bitcoin",
             "image": {
-                "thumb": "https://assets.coingecko.com/coins/images/11939/thumb/shiba.png?1622619446",
-                "small": "https://assets.coingecko.com/coins/images/11939/small/shiba.png?1622619446"
+                "thumb": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+                "small": "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744"
             },
             "tokenBalance": "0",
             "contract_addresses": {
-                "localhost": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+                "localhost": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+                "sepolia": "0xf864F011C5A97fD8Da79baEd78ba77b47112935a"
             },
             "decimal_place": "18"
         },
@@ -38,7 +40,8 @@
             },
             "tokenBalance": "0",
             "contract_addresses": {
-                "localhost": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+                "localhost": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+                "sepolia": "0x779877A7B0D9E8603169DdbD7836e478b4624789"
             },
             "decimal_place": "18"
         },
@@ -52,7 +55,8 @@
             },
             "tokenBalance": "0",
             "contract_addresses": {
-                "localhost": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+                "localhost": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+                "sepolia": "0xc76a6A917cB02fEeFaF0d400F51DDacA7A950e40"
             },
             "decimal_place": "18"
         },
@@ -66,7 +70,8 @@
             },
             "tokenBalance": "0",
             "contract_addresses": {
-                "localhost": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+                "localhost": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+                "sepolia": "0x5bB220Afc6E2e008CB2302a83536A019ED245AA2"
             },
             "decimal_place": "18"
         },
@@ -80,7 +85,8 @@
             },
             "tokenBalance": "0",
             "contract_addresses": {
-                "localhost": "0x0165878A594ca255338adfa4d48449f69242Eb8F"
+                "localhost": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+                "sepolia": "0x64CfbEdFA42593d8A4D387b6f4E3E10B78d282fF"
             },
             "decimal_place": "18"
         },
@@ -94,7 +100,8 @@
             },
             "tokenBalance": "0",
             "contract_addresses": {
-                "localhost": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"
+                "localhost": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+                "sepolia": "0x68194a729C2450ad26072b3D33ADaCbcef39D574"
             },
             "decimal_place": "18"
         },
@@ -108,7 +115,8 @@
             },
             "tokenBalance": "0",
             "contract_addresses": {
-                "localhost": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+                "localhost": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+                "sepolia": "0x746184a7EFcf18BEa47aE07e1248c76Ad0ECe109"
             },
             "decimal_place": "18"
         }
