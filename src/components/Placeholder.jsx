@@ -16,6 +16,10 @@ const Div = styled.div`
     gap: 20px;
     line-height: 1.4;
 
+    span {
+        text-decoration: none;
+    }
+
     .icons-container {
         display: flex;
         gap: 10px;
@@ -28,6 +32,10 @@ const Div = styled.div`
     p {
         font-weight: 500;
         font-size: 0.9rem;
+    }
+
+    .placeholder-link {
+        color: blue;
     }
 
     @media (min-width: 530px) {
@@ -52,8 +60,14 @@ const Placeholder = () => {
                 <ImBlocked className="icons" />
             </div>
             <p>
-                Please, <span>connect your wallet</span> to Ethereum Sepolia
-                (11155111) to launch the app.
+                <span>Connect Metamask</span> to Ethereum Sepolia to launch the
+                app. If you don't have Metamask installed in your browser{" "}
+                <a
+                    className="placeholder-link"
+                    href="https://metamask.io/download/"
+                >
+                    learn how to set up an account for free.
+                </a>
             </p>
         </Div>
     )
