@@ -295,7 +295,7 @@ const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
                     type="text"
                     id="data"
                     name="data"
-                    placeholder="Insert parameters..."
+                    placeholder="Insert encoded data..."
                     value={formData.data}
                 />
                 <label htmlFor="description" className="label margin-top">
