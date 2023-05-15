@@ -106,6 +106,10 @@ const Status = () => {
             )
             const ethData = await res.json()
 
+            console.log(ethData)
+
+            console.log(ethData.market_data.current_price.usd)
+
             setEthPrice(ethData.market_data.current_price.usd)
 
             await checkEvents()
@@ -124,7 +128,7 @@ const Status = () => {
     const checkEvents = async () => {
         const startBlockNumber = await provider.getBlockNumber()
 
-        multiSigWallet.once("Deposit", async (...args) => {
+        multiSigWallet.on("Deposit", async (...args) => {
             const event = args[args.length - 1]
             if (event.blockNumber <= startBlockNumber) return
 
