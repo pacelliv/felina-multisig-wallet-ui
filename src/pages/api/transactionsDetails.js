@@ -1,0 +1,59 @@
+import { promises as fs } from "fs"
+import path from "path"
+import { cwd } from "process"
+
+const handler = async (req, res) => {
+    if (req.method !== "POST" && req.method !== "PUT") {
+        res.status(405).send({
+            message: "Only POST and PUT requests allowed",
+        })
+        return
+    }
+
+    let transactionsDetails
+    const transactionsDetailsDirectory = path.join(
+        cwd(),
+        "src/database/transactionsDetails.json"
+    )
+
+    try {
+        transactionsDetails = JSON.parse(
+            await fs.readFile(transactionsDetailsDirectory, {
+                encoding: "utf8",
+            })
+        )
+    } catch (e) {
+        const error = e.toString()
+        res.status(400).json({ error })
+    }
+
+    if (req.method === "POST") {
+        try {
+            const transaction = req.body
+            transactionsDetails.transactionsDetails.push(transaction)
+            await fs.writeFile(
+                "./src/database/transactionsDetails.json",
+                JSON.stringify(transactionsDetails)
+            )
+            res.status(201).json({ success: true })
+        } catch (e) {
+            const error = e.toString()
+            res.status(400).json({ error })
+        }
+    } else {
+        try {
+            const { id } = req.body
+            transactionsDetails.transactionsDetails[id].executed = true
+            await fs.writeFile(
+                "./src/database/transactionsDetails.json",
+                JSON.stringify(transactionsDetails)
+            )
+            res.status(201).json({ success: true })
+        } catch (e) {
+            const error = e.toString()
+            res.status(400).json({ error })
+        }
+    }
+}
+
+export default handler

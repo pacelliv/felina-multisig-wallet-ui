@@ -1,0 +1,116 @@
+{
+    "tokensDetails": [
+        {
+            "id": "true-usd",
+            "symbol": "tusd",
+            "name": "TrueUSD",
+            "image": {
+                "thumb": "https://assets.coingecko.com/coins/images/3449/thumb/tusd.png?1618395665",
+                "small": "https://assets.coingecko.com/coins/images/3449/small/tusd.png?1618395665"
+            },
+            "tokenBalance": "0",
+            "contract_addresses": {
+                "localhost": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+            },
+            "decimal_place": "18"
+        },
+        {
+            "id": "shiba-inu",
+            "symbol": "shib",
+            "name": "Shiba Inu",
+            "image": {
+                "thumb": "https://assets.coingecko.com/coins/images/11939/thumb/shiba.png?1622619446",
+                "small": "https://assets.coingecko.com/coins/images/11939/small/shiba.png?1622619446"
+            },
+            "tokenBalance": "0",
+            "contract_addresses": {
+                "localhost": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+            },
+            "decimal_place": "18"
+        },
+        {
+            "id": "chainlink",
+            "symbol": "LINK",
+            "name": "Chainlink",
+            "image": {
+                "thumb": "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
+                "small": "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png?1547034700"
+            },
+            "tokenBalance": "0",
+            "contract_addresses": {
+                "localhost": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+            },
+            "decimal_place": "18"
+        },
+        {
+            "id": "uniswap",
+            "symbol": "uni",
+            "name": "Uniswap",
+            "image": {
+                "thumb": "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
+                "small": "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604"
+            },
+            "tokenBalance": "0",
+            "contract_addresses": {
+                "localhost": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+            },
+            "decimal_place": "18"
+        },
+        {
+            "id": "aave",
+            "symbol": "aave",
+            "name": "Aave",
+            "image": {
+                "thumb": "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
+                "small": "https://assets.coingecko.com/coins/images/12645/small/AAVE.png?1601374110"
+            },
+            "tokenBalance": "0",
+            "contract_addresses": {
+                "localhost": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+            },
+            "decimal_place": "18"
+        },
+        {
+            "id": "1inch",
+            "symbol": "1inch",
+            "name": "1inch",
+            "image": {
+                "thumb": "https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028",
+                "small": "https://assets.coingecko.com/coins/images/13469/small/1inch-token.png?1608803028"
+            },
+            "tokenBalance": "0",
+            "contract_addresses": {
+                "localhost": "0x0165878A594ca255338adfa4d48449f69242Eb8F"
+            },
+            "decimal_place": "18"
+        },
+        {
+            "id": "dai",
+            "symbol": "dai",
+            "name": "Dai",
+            "image": {
+                "thumb": "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+                "small": "https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734"
+            },
+            "tokenBalance": "0",
+            "contract_addresses": {
+                "localhost": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"
+            },
+            "decimal_place": "18"
+        },
+        {
+            "id": "curve-dao-token",
+            "symbol": "cvr",
+            "name": "Curve DAO",
+            "image": {
+                "thumb": "https://assets.coingecko.com/coins/images/12124/thumb/Curve.png?1597369484",
+                "small": "https://assets.coingecko.com/coins/images/12124/small/Curve.png?1597369484"
+            },
+            "tokenBalance": "0",
+            "contract_addresses": {
+                "localhost": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+            },
+            "decimal_place": "18"
+        }
+    ]
+}

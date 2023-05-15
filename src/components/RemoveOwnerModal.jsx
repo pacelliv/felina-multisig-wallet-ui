@@ -1,0 +1,269 @@
+import styled from "styled-components"
+import { FaTimes } from "react-icons/fa"
+import { useState, useContext } from "react"
+import { useWeb3Contract } from "react-moralis"
+import { walletAbi } from "../constants"
+import { Web3Context } from "@/context/Web3Context"
+import { transactionsDetails } from "@/database"
+import { addTransactionDetail } from "@/utils/api"
+import { encoder } from "@/utils/utilities"
+
+const Container = styled.div`
+    position: fixed;
+    max-width: 530px;
+    padding: 1.5em;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99;
+    margin: auto;
+    box-shadow: 0px 0px 5px 2px #d0d0d0;
+    border-radius: 10px;
+    background-color: #f1faee;
+    height: 578px;
+
+    .close-modal-icon {
+        font-size: 2.5rem;
+        cursor: pointer;
+        padding: 0.2em;
+        margin: 0 0 0 auto;
+        display: block;
+    }
+
+    .close-modal-icon:hover {
+        opacity: 0.7;
+    }
+
+    .modal-title {
+        margin: 0 0 0.6em 0;
+        font-size: 1.75rem;
+    }
+
+    .modal-instructions {
+        line-height: 1.5;
+    }
+
+    .code {
+        background: white;
+        padding: 0.2em 0.4em;
+        font-weight: 600;
+        border-radius: 5px;
+    }
+
+    .form {
+        margin-top: 1em;
+    }
+
+    label {
+        display: block;
+    }
+
+    .label {
+        font-weight: 500;
+    }
+
+    .example {
+        margin-top: 0.5em;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        word-wrap: break-word;
+    }
+
+    .margin-top {
+        margin-top: 1em;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        margin-top: 0.5em;
+        text-indent: 6px;
+        padding: 0.7em 0.5em;
+        border-radius: 5px;
+        border: 1px solid #b1b1b1;
+        font-family: inherit;
+    }
+
+    .icon {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 900;
+    }
+
+    textarea {
+        display: block;
+        border: 1px solid #b1b1b1;
+        width: 100%;
+        height: 100px;
+        border-radius: 5px;
+        padding: 0.7em 1em;
+        margin-top: 0.5em;
+        font-family: inherit;
+        letter-spacing: 0.2px;
+        line-height: 1.4;
+        resize: none;
+    }
+
+    .submit-button {
+        padding: 0.9em 1em;
+        margin-top: 1.7em;
+        width: 100%;
+        border-radius: 5px;
+        border: none;
+        font-family: inherit;
+        font-size: 1.05rem;
+        font-weight: 600;
+        background-color: #457b9d;
+        color: #ffead0;
+        letter-spacing: 0.3px;
+        transition: all 0.4s ease;
+    }
+
+    .submit-button:disabled {
+        cursor: default;
+    }
+
+    .submit-button:hover:not([disabled]) {
+        background-color: #005f73;
+    }
+
+    @media (max-width: 550px) {
+        margin: auto 0.8em;
+    }
+
+    @media (max-width: 492px) {
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: ${({ enterMouse }) => enterMouse && "#d1d1d1"};
+            border-radius: 10px;
+        }
+    }
+`
+
+const RemoveOwnerModal = ({ toggleRemoveOwnerModal }) => {
+    const { contractAddress } = useContext(Web3Context)
+    const [enterMouse, setEnterMouse] = useState(false)
+    const [formData, setFormData] = useState({ id: "", description: "" })
+    const [encodedData, setEncodedData] = useState("")
+
+    const {
+        runContractFunction: submit,
+        isLoading,
+        isFetching,
+    } = useWeb3Contract({
+        abi: walletAbi,
+        contractAddress,
+        functionName: "submit",
+        params: { _to: contractAddress, _amount: "0", _data: encodedData },
+    })
+
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }))
+    }
+
+    const handleSuccess = async (tx) => {
+        let transactionReceipt
+        try {
+            transactionReceipt = await tx.wait(1)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            await addTransactionDetail({
+                sender: transactionReceipt.from,
+                id: transactionsDetails.transactionsDetails.length,
+                to: contractAddress,
+                amount: "0",
+                data: encodedData,
+                executed: false,
+                hash: transactionReceipt.transactionHash,
+                description: formData.description,
+            })
+        }
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        const encodedData = encoder(
+            ["function removeOwner(uint256 _index)"],
+            "removeOwner",
+            [formData.id]
+        )
+        setEncodedData(encodedData)
+        await submit({
+            onSuccess: handleSuccess,
+            onError: (error) => console.log(error),
+        })
+    }
+
+    return (
+        <Container
+            onMouseOver={() => setEnterMouse(true)}
+            onMouseLeave={() => setEnterMouse(false)}
+            enterMouse={enterMouse}
+        >
+            <FaTimes
+                className="close-modal-icon"
+                onClick={toggleRemoveOwnerModal}
+            />
+            <h1 className="modal-title">Remove owner</h1>
+            <p className="modal-instructions">
+                Insert the id of the owner to be removed according to the
+                example. Hit the submit button to add a new transaction to the
+                pending list.
+            </p>
+            <p className="modal-instructions margin-top">
+                The calldata of the transaction is automatically encoded.
+            </p>
+            <form className="form" onSubmit={handleSubmit}>
+                <label htmlFor="id" className="label">
+                    Owner ID:
+                </label>
+                <label htmlFor="id" className="example">
+                    Example: <code className="code">0</code>
+                </label>
+                <input
+                    onChange={handleChange}
+                    type="text"
+                    id="id"
+                    name="id"
+                    value={formData.id}
+                    required
+                />
+                <label htmlFor="description" className="label margin-top">
+                    Transaction description:
+                </label>
+                <textarea
+                    onChange={handleChange}
+                    id="description"
+                    name="description"
+                    placeholder="Insert description..."
+                    value={formData.description}
+                    required
+                />
+                <button
+                    disabled={isFetching || isLoading}
+                    className="submit-button"
+                >
+                    Submit Transaction
+                </button>
+            </form>
+        </Container>
+    )
+}
+
+export default RemoveOwnerModal
