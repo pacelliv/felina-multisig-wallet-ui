@@ -65,6 +65,7 @@ const Placeholder = () => {
                 <a
                     className="placeholder-link"
                     href="https://metamask.io/download/"
+                    target="_blank"
                 >
                     learn how to set up an account for free.
                 </a>
