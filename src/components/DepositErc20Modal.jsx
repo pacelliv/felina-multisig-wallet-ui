@@ -208,7 +208,7 @@ const DepositErc20Modal = ({
     setOpenDepositErc20Modal,
     token,
 }) => {
-    const { contractAddress, confirmations } = useContext(Web3Context)
+    const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
     const [formData, setFormData] = useState({
         amount: "",
@@ -254,7 +254,7 @@ const DepositErc20Modal = ({
 
     const handleSuccessApprove = async (tx) => {
         try {
-            await tx.wait(confirmations)
+            await tx.wait(1)
             await depositErc20({
                 onSuccess: handleSuccessDepositErc20,
                 onError: (error) => console.log(error),
@@ -266,7 +266,7 @@ const DepositErc20Modal = ({
 
     const handleSuccessDepositErc20 = async (tx) => {
         try {
-            await tx.wait(confirmations)
+            await tx.wait(1)
         } catch (error) {
             console.log(error)
         }
