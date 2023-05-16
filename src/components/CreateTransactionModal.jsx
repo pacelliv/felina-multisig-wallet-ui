@@ -5,8 +5,7 @@ import { useWeb3Contract } from "react-moralis"
 import { walletAbi } from "../constants"
 import { Web3Context } from "@/context/Web3Context"
 import { ethers } from "ethers"
-import { transactionsDetails } from "@/database"
-import { addTransactionDetail } from "@/utils/api"
+import { addTransactionDescription } from "@/utils/api"
 
 const Container = styled.div`
     position: fixed;
@@ -192,6 +191,13 @@ const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
         },
     })
 
+    const { runContractFunction: getTransactions } = useWeb3Contract({
+        abi: walletAbi,
+        contractAddress,
+        functionName: "getTransactions",
+        params: {},
+    })
+
     const handleChange = (e) => {
         const { name, value } = e.target
         setFormData((prevFormData) => ({
@@ -200,32 +206,25 @@ const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
         }))
     }
 
-    const handleSuccess = async (tx) => {
-        let transactionReceipt
-        try {
-            transactionReceipt = await tx.wait(1)
-        } catch (error) {
-            console.log(error)
-        } finally {
-            await addTransactionDetail({
-                sender: transactionReceipt.from,
-                id: transactionsDetails.transactionsDetails.length,
-                to: formData.to,
-                amount: formData.amount,
-                data: formData.data ? formData.data : "0x",
-                executed: false,
-                hash: transactionReceipt.transactionHash,
-                description: formData.description,
-            })
-        }
-    }
-
     const handleSubmit = async (event) => {
         event.preventDefault()
+        const transactionsList = await getTransactions()
+        await addTransactionDescription(
+            transactionsList.length.toString(),
+            formData.description
+        )
         await submit({
             onSuccess: handleSuccess,
             onError: (error) => console.log(error),
         })
+    }
+
+    const handleSuccess = async (tx) => {
+        try {
+            await tx.wait(1)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
