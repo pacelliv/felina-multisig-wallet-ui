@@ -69,7 +69,7 @@ const Navbar = ({ toggleSidebar }) => {
                 Felina Wallet &#169;
             </Link>
             <a href="/" className="navbar-link">
-                Documentation
+                Smart contract
             </a>
             <ConnectButton />
         </Nav>
