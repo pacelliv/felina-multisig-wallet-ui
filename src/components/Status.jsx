@@ -99,19 +99,16 @@ const Status = () => {
         try {
             const walletBalanceFromContractCall = (await balance()).toString()
             setWalletBalance(walletBalanceFromContractCall)
-            console.log(walletBalanceFromContractCall)
 
             const res = await fetch(
                 "https://api.coingecko.com/api/v3/coins/ethereum?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false",
                 { mode: "cors" }
             )
+
             const ethData = await res.json()
-
-            console.log(ethData.market_data.current_price.usd)
-
             setEthPrice(ethData.market_data.current_price.usd)
 
-            await checkEvents()
+            await checkDepositsEvents()
         } catch (error) {
             console.log(error)
         }
@@ -124,7 +121,7 @@ const Status = () => {
         }, 1500)
     }
 
-    const checkEvents = async () => {
+    const checkDepositsEvents = async () => {
         const startBlockNumber = await provider.getBlockNumber()
 
         multiSigWallet.on("Deposit", async (...args) => {
@@ -134,7 +131,10 @@ const Status = () => {
             await updateUI()
         })
 
-        multiSigWallet.once("Execute", async () => {
+        multiSigWallet.on("Execute", async (...args) => {
+            const event = args[args.length - 1]
+            if (event.blockNumber <= startBlockNumber) return
+
             await updateUI()
         })
     }
