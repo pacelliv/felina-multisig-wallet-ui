@@ -9,8 +9,16 @@ import { Web3Context } from "@/context/Web3Context"
 import { ethers } from "ethers"
 import { FaTimes } from "react-icons/fa"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
-import { transactionsDetails, nftsDetails } from "../database"
-import { updateTransactionDetail, deleteNftDetail } from "@/utils/api"
+import {
+    transactionsDetails,
+    nftsDetails,
+    transactionsDescriptions,
+} from "../database"
+import {
+    updateTransactionDetail,
+    deleteNftDetail,
+    addTransactionDetail,
+} from "@/utils/api"
 import { nftAbi } from "@/constants"
 import { useWeb3Contract } from "react-moralis"
 
@@ -49,6 +57,7 @@ const Div = styled.div`
 
     .arrow-icon {
         position: absolute;
+        font-size: 0.95rem;
         top: 10px;
         left: 15px;
     }
@@ -94,7 +103,7 @@ const Div = styled.div`
 
     .transaction {
         width: calc(100% - 60px);
-        margin-top: 1.1em;
+        margin-top: 0.7em;
     }
 
     .transaction-id {
@@ -219,15 +228,29 @@ const Home = () => {
             const ownerOf = await runContractFunction({
                 params: ownerOfOptions,
             })
-
             return ownerOf
         } catch (error) {
             console.log(error)
         }
     }
 
-    const checkEvents = async () => {
+    const listenForEvents = async () => {
         const latestBlockNumber = await provider.getBlockNumber()
+
+        multiSigWallet.on("Submit", async (...args) => {
+            const event = args[args.length - 1]
+            if (event.blockNumber <= latestBlockNumber) return
+
+            await addTransactionDetail({
+                sender: event.args[0],
+                id: event.args[1].toString(),
+                to: event.args[2],
+                amount: event.args[3].toString(),
+                data: event.args[4],
+                executed: false,
+                hash: event.transactionHash,
+            })
+        })
 
         multiSigWallet.on("Execute", async (...args) => {
             const event = args[args.length - 1]
@@ -235,17 +258,23 @@ const Home = () => {
 
             // rest of code for latest block
 
-            const txId = event.args[1].toNumber()
+            const txId = event.args[1].toString()
             const to = event.args[2]
             const data = event.args[3]
 
-            await updateTransactionDetail(txId)
+            const txIndex = transactionsDetails.transactionsDetails.findIndex(
+                (transactionDetail) => transactionDetail.id === txId
+            )
 
-            const index = nftsDetails.nftsDetails.findIndex(
+            const nftIndex = nftsDetails.nftsDetails.findIndex(
                 (nftDetail) => nftDetail.nftAddress === to
             )
 
-            if (index != -1) {
+            if (txIndex != -1) {
+                await updateTransactionDetail(txId)
+            }
+
+            if (nftIndex != -1) {
                 const iface = new ethers.utils.Interface(nftAbi)
                 const decodedData = iface.parseTransaction({ data })
                 const nftOwner = await getNftOwner(
@@ -267,11 +296,11 @@ const Home = () => {
         if (isWeb3Enabled) {
             setTransactions(transactionsDetails.transactionsDetails)
 
-            const setUpUi = async () => {
-                await checkEvents()
+            const subscribeToEvents = async () => {
+                await listenForEvents()
             }
 
-            setUpUi().catch((error) => console.log(error))
+            subscribeToEvents().catch((error) => console.log(error))
         }
     }, [isWeb3Enabled])
 
@@ -283,7 +312,6 @@ const Home = () => {
             )}
             {openCreateTransactionModal && (
                 <CreateTransactionModal
-                    openCreateTransactionModal={openCreateTransactionModal}
                     toggleCreateTransactionModal={toggleCreateTransactionModal}
                 />
             )}
@@ -349,7 +377,9 @@ const Home = () => {
                                             sender: transaction.sender,
                                             hash: transaction.hash,
                                             description:
-                                                transaction.description,
+                                                transactionsDescriptions[
+                                                    transaction.id
+                                                ],
                                         })
                                         toggleTransactionModal()
                                     }}
@@ -394,7 +424,13 @@ const Home = () => {
                                         <p className="transaction-description">
                                             Description:{" "}
                                             <span className="value">
-                                                {transaction.description}
+                                                {transactionsDescriptions[
+                                                    transaction.id
+                                                ]
+                                                    ? transactionsDescriptions[
+                                                          transaction.id
+                                                      ]
+                                                    : "Transaction description not avaliable"}
                                             </span>
                                         </p>
                                     </div>
