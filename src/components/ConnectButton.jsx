@@ -6,10 +6,10 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { FaWallet } from "react-icons/fa"
 
 const Button = styled.button`
-    padding: 0.6em 1em;
+    padding: 0.6em 0.9em;
     font-family: inherit;
     background-color: white;
-    font-weight: 600;
+    font-weight: 500;
     border: 1px #bbbbbb solid;
     display: flex;
     align-items: center;
