@@ -30,11 +30,18 @@ const handler = async (req, res) => {
     if (req.method === "POST") {
         try {
             const transaction = req.body
-            transactionsDetails.transactionsDetails.push(transaction)
-            await fs.writeFile(
-                "./src/database/transactionsDetails.json",
-                JSON.stringify(transactionsDetails)
+            const index = transactionsDetails.transactionsDetails.findIndex(
+                (transactionDetail) => transactionDetail.id === transaction.id
             )
+
+            if (index === -1) {
+                transactionsDetails.transactionsDetails.push(transaction)
+                await fs.writeFile(
+                    "./src/database/transactionsDetails.json",
+                    JSON.stringify(transactionsDetails)
+                )
+            }
+
             res.status(201).json({ success: true })
         } catch (e) {
             const error = e.toString()
@@ -43,7 +50,12 @@ const handler = async (req, res) => {
     } else {
         try {
             const { id } = req.body
-            transactionsDetails.transactionsDetails[id].executed = true
+
+            const index = transactionsDetails.transactionsDetails.findIndex(
+                (transactionDetail) => transactionDetail.id === id
+            )
+
+            transactionsDetails.transactionsDetails[index].executed = true
             await fs.writeFile(
                 "./src/database/transactionsDetails.json",
                 JSON.stringify(transactionsDetails)
