@@ -4,8 +4,7 @@ import { useState, useContext } from "react"
 import { useWeb3Contract } from "react-moralis"
 import { walletAbi } from "../constants"
 import { Web3Context } from "@/context/Web3Context"
-import { transactionsDetails } from "@/database"
-import { addTransactionDetail } from "@/utils/api"
+import { addTransactionDescription } from "@/utils/api"
 import { encoder } from "@/utils/utilities"
 
 const Container = styled.div`
@@ -155,17 +154,13 @@ const AddOwnerModal = ({ toggleAddOwnerModal }) => {
     const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
     const [formData, setFormData] = useState({ owner: "", description: "" })
-    const [encodedData, setEncodedData] = useState("")
+    const { runContractFunction, isFetching, isLoading } = useWeb3Contract()
 
-    const {
-        runContractFunction: submit,
-        isLoading,
-        isFetching,
-    } = useWeb3Contract({
+    const { runContractFunction: getTransactions } = useWeb3Contract({
         abi: walletAbi,
         contractAddress,
-        functionName: "submit",
-        params: { _to: contractAddress, _amount: "0", _data: encodedData },
+        functionName: "getTransactions",
+        params: {},
     })
 
     const handleChange = (e) => {
@@ -176,26 +171,6 @@ const AddOwnerModal = ({ toggleAddOwnerModal }) => {
         }))
     }
 
-    const handleSuccess = async (tx) => {
-        let transactionReceipt
-        try {
-            transactionReceipt = await tx.wait(1)
-        } catch (error) {
-            console.log(error)
-        } finally {
-            await addTransactionDetail({
-                sender: transactionReceipt.from,
-                id: transactionsDetails.transactionsDetails.length,
-                to: contractAddress,
-                amount: "0",
-                data: encodedData,
-                executed: false,
-                hash: transactionReceipt.transactionHash,
-                description: formData.description,
-            })
-        }
-    }
-
     const handleSubmit = async (event) => {
         event.preventDefault()
         const encodedData = encoder(
@@ -203,11 +178,40 @@ const AddOwnerModal = ({ toggleAddOwnerModal }) => {
             "addOwner",
             [formData.owner]
         )
-        setEncodedData(encodedData)
-        await submit({
-            onSuccess: handleSuccess,
-            onError: (error) => console.log(error),
-        })
+
+        const transactionsList = await getTransactions()
+        await addTransactionDescription(
+            transactionsList.length.toString(),
+            formData.description
+        )
+        await submitTransaction(contractAddress, "0", encodedData)
+    }
+
+    const submitTransaction = async (walletAddress, amount, data) => {
+        const submitTransactionOptions = {
+            abi: walletAbi,
+            contractAddress: walletAddress,
+            functionName: "submit",
+            params: { _to: walletAddress, _amount: amount, _data: data },
+        }
+
+        try {
+            await runContractFunction({
+                onSuccess: handleSuccess,
+                onError: (error) => console.log(error),
+                params: submitTransactionOptions,
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleSuccess = async (tx) => {
+        try {
+            await tx.wait(1)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
