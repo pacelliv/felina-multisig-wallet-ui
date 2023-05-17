@@ -28,6 +28,7 @@ const handler = async (req, res) => {
     if (req.method === "POST") {
         try {
             const { id, description } = req.body
+            console.log(transactionsDescriptions)
             transactionsDescriptions[id] = description
             await fs.writeFile(
                 transactionsDescriptionsDirectory,

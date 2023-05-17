@@ -1,6 +1,6 @@
 export const addTransactionDetail = async (transaction) => {
     try {
-        const res = await fetch("/api/transactionsDetails", {
+        const res = await fetch("/api/transactions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export const addTransactionDetail = async (transaction) => {
 
 export const updateTransactionDetail = async (id) => {
     try {
-        const res = await fetch("/api/transactionsDetails", {
+        const res = await fetch("/api/transactions", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export const updateTransactionDetail = async (id) => {
 //     network
 // ) => {
 //     try {
-//         const res = await fetch("/api/tokensDetails", {
+//         const res = await fetch("/api/tokens", {
 //             method: "PUT",
 //             headers: {
 //                 "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export const updateTransactionDetail = async (id) => {
 
 export const addNftDetail = async (nftDetail) => {
     try {
-        const res = await fetch("/api/nftsDetails", {
+        const res = await fetch("/api/nfts", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export const addNftDetail = async (nftDetail) => {
 export const deleteNftDetail = async (nftAddress, tokenId) => {
     try {
         const res = await fetch(
-            `/api/nftsDetails?nftAddress=${nftAddress}&tokenId=${tokenId}`,
+            `/api/nfts?nftAddress=${nftAddress}&tokenId=${tokenId}`,
             {
                 method: "DELETE",
             }
@@ -85,7 +85,7 @@ export const deleteNftDetail = async (nftAddress, tokenId) => {
 
 export const addTransactionDescription = async (id, description) => {
     try {
-        const res = await fetch("/api/transactionsDescriptions", {
+        const res = await fetch("/api/transactions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
