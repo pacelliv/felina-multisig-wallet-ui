@@ -4,8 +4,8 @@ import { promises as fs } from "fs"
 import { transactionsDescriptions } from "@/database"
 
 const handler = async (req, res) => {
-    if (req.method !== "POST") {
-        res.status(405).send({ message: "Only POST requests allowed" })
+    if (req.method !== "POST" && req.method !== "GET") {
+        res.status(405).send({ message: "Only GET and POST requests allowed" })
         return
     }
 
@@ -38,6 +38,13 @@ const handler = async (req, res) => {
         } catch (error) {
             const e = error.toString()
             res.status(400).send({ e })
+        }
+    } else if (req.method === "GET") {
+        try {
+            res.status(200).json(transactionsDescriptions)
+        } catch (e) {
+            const error = e.toString()
+            res.status(400).send({ error })
         }
     }
 }
