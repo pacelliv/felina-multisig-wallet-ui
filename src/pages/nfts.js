@@ -253,7 +253,7 @@ const Nfts = () => {
                                 <p className="nft-metadata">
                                     Address:{" "}
                                     <span>
-                                        {nft.nftAddress.slice(0, 6) +
+                                        {nft.nftAddress.slice(0, 5) +
                                             "..." +
                                             nft.nftAddress.slice(
                                                 nft.nftAddress.length - 4
