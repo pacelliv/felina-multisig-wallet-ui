@@ -17,7 +17,7 @@ import {
 import {
     updateTransactionDetail,
     deleteNftDetail,
-    addTransactionDetail,
+    // addTransactionDetail,
 } from "@/utils/api"
 import { nftAbi } from "@/constants"
 import { useWeb3Contract } from "react-moralis"
@@ -229,6 +229,20 @@ const Home = () => {
                 params: ownerOfOptions,
             })
             return ownerOf
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const addTransactionDetail = async (transaction) => {
+        try {
+            await fetch("/api/transactions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(transaction),
+            })
         } catch (error) {
             console.log(error)
         }
