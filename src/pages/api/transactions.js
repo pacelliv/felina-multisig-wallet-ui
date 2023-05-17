@@ -12,10 +12,10 @@ const handler = async (req, res) => {
     }
 
     // let transactionsDetails
-    // // const transactionsDetailsDirectory = path.join(
-    // //     cwd(),
-    // //     "src/database/transactionsDetails.json"
-    // // )
+    // const transactionsDetailsDirectory = path.join(
+    //     cwd(),
+    //     "src/database/transactionsDetails.json"
+    // )
 
     // try {
     //     transactionsDetails = JSON.parse(
