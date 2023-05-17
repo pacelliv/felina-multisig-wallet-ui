@@ -2,7 +2,6 @@
 
 const nextConfig = {
     reactStrictMode: true,
-    target: "serverless",
     compiler: {
         styledComponents: true,
     },
