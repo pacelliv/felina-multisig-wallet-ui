@@ -35,9 +35,9 @@ const handler = async (req, res) => {
                 JSON.stringify(transactionsDescriptions)
             )
             res.status(201).send({ success: true })
-        } catch (error) {
-            const e = error.toString()
-            res.status(400).send({ e })
+        } catch (e) {
+            const error = e.toString()
+            res.status(400).send({ error })
         }
     } else if (req.method === "GET") {
         try {
