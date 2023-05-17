@@ -166,7 +166,10 @@ const Container = styled.div`
     }
 `
 
-const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
+const CreateTransactionModal = ({
+    toggleCreateTransactionModal,
+    addTransactionDescription,
+}) => {
     const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
     const [formData, setFormData] = useState({
@@ -217,23 +220,6 @@ const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
             onSuccess: handleSuccess,
             onError: (error) => console.log(error),
         })
-    }
-
-    const addTransactionDescription = async (id, description) => {
-        try {
-            await fetch(
-                "https://white-grass-4236.on.fleek.co/api/descriptions",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ id, description }),
-                }
-            )
-        } catch (error) {
-            console.log(error)
-        }
     }
 
     const handleSuccess = async (tx) => {
