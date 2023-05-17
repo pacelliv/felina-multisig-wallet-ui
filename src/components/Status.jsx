@@ -81,7 +81,7 @@ const Div = styled.div`
 `
 
 const Status = () => {
-    const { isWeb3Enabled, contractAddress, provider, multiSigWallet } =
+    const { isWeb3Enabled, contractAddress, providerC, multiSigWalletC } =
         useContext(Web3Context)
     const { windowWidth } = useContext(Context)
     const [walletBalance, setWalletBalance] = useState(0)
@@ -122,16 +122,16 @@ const Status = () => {
     }
 
     const checkDepositsEvents = async () => {
-        const startBlockNumber = await provider.getBlockNumber()
+        const startBlockNumber = await providerC.getBlockNumber()
 
-        multiSigWallet.on("Deposit", async (...args) => {
+        multiSigWalletC.on("Deposit", async (...args) => {
             const event = args[args.length - 1]
             if (event.blockNumber <= startBlockNumber) return
 
             await updateUI()
         })
 
-        multiSigWallet.on("Execute", async (...args) => {
+        multiSigWalletC.on("Execute", async (...args) => {
             const event = args[args.length - 1]
             if (event.blockNumber <= startBlockNumber) return
 

@@ -186,8 +186,8 @@ const Home = () => {
     const {
         isWeb3Enabled,
         account,
-        provider,
-        multiSigWallet,
+        providerA,
+        multiSigWalletA,
         contractAddress,
     } = useContext(Web3Context)
     const { runContractFunction } = useWeb3Contract()
@@ -235,9 +235,9 @@ const Home = () => {
     }
 
     const listenForEvents = async () => {
-        const latestBlockNumber = await provider.getBlockNumber()
+        const latestBlockNumber = await providerA.getBlockNumber()
 
-        multiSigWallet.on("Submit", async (...args) => {
+        multiSigWalletA.on("Submit", async (...args) => {
             const event = args[args.length - 1]
             if (event.blockNumber <= latestBlockNumber) return
 
@@ -252,7 +252,7 @@ const Home = () => {
             })
         })
 
-        multiSigWallet.on("Execute", async (...args) => {
+        multiSigWalletA.on("Execute", async (...args) => {
             const event = args[args.length - 1]
             if (event.blockNumber <= latestBlockNumber) return // old event, ignore it
 

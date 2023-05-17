@@ -25,23 +25,61 @@ const Web3ContextProvider = ({ children }) => {
             ? walletContractAddresses[chainId][0]
             : ""
 
-    const provider = new ethers.providers.JsonRpcProvider(
+    const providerA = new ethers.providers.JsonRpcProvider(
         chainId === 31337
             ? process.env.NEXT_PUBLIC_RPC_URL_HARDHAT
-            : process.env.NEXT_PUBLIC_RPC_URL_SEPOLIA
+            : process.env.NEXT_PUBLIC_RPC_URL_SEPOLIA_A
     )
 
-    const wallet = new ethers.Wallet(
+    const providerB = new ethers.providers.JsonRpcProvider(
+        chainId === 31337
+            ? process.env.NEXT_PUBLIC_RPC_URL_HARDHAT
+            : process.env.NEXT_PUBLIC_RPC_URL_SEPOLIA_B
+    )
+
+    const providerC = new ethers.providers.JsonRpcProvider(
+        chainId === 31337
+            ? process.env.NEXT_PUBLIC_RPC_URL_HARDHAT
+            : process.env.NEXT_PUBLIC_RPC_URL_SEPOLIA_C
+    )
+
+    const walletA = new ethers.Wallet(
         chainId === 31337
             ? process.env.NEXT_PUBLIC_PRIVATE_KEY_HARDHAT
             : process.env.NEXT_PUBLIC_PRIVATE_KEY_SEPOLIA,
-        provider
+        providerA
     )
 
-    const multiSigWallet = new ethers.Contract(
+    const walletB = new ethers.Wallet(
+        chainId === 31337
+            ? process.env.NEXT_PUBLIC_PRIVATE_KEY_HARDHAT
+            : process.env.NEXT_PUBLIC_PRIVATE_KEY_SEPOLIA,
+        providerB
+    )
+
+    const walletC = new ethers.Wallet(
+        chainId === 31337
+            ? process.env.NEXT_PUBLIC_PRIVATE_KEY_HARDHAT
+            : process.env.NEXT_PUBLIC_PRIVATE_KEY_SEPOLIA,
+        providerC
+    )
+
+    const multiSigWalletA = new ethers.Contract(
         contractAddress,
         walletAbi,
-        wallet
+        walletA
+    )
+
+    const multiSigWalletB = new ethers.Contract(
+        contractAddress,
+        walletAbi,
+        walletB
+    )
+
+    const multiSigWalletC = new ethers.Contract(
+        contractAddress,
+        walletAbi,
+        walletC
     )
 
     return (
@@ -57,9 +95,15 @@ const Web3ContextProvider = ({ children }) => {
                 chainIdHex,
                 network,
                 contractAddress,
-                provider,
-                wallet,
-                multiSigWallet,
+                providerA,
+                providerB,
+                providerC,
+                walletA,
+                walletB,
+                walletC,
+                multiSigWalletA,
+                multiSigWalletB,
+                multiSigWalletC,
             }}
         >
             {children}

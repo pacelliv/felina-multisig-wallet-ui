@@ -151,7 +151,7 @@ const ButtonsContainer = styled.div`
 
 const Tokens = ({ marketData }) => {
     const { windowWidth } = useContext(Context)
-    const { network, isWeb3Enabled, multiSigWallet, provider } =
+    const { network, isWeb3Enabled, multiSigWalletB, providerB } =
         useContext(Web3Context)
     const [openDepositErc20Modal, setOpenDepositErc20Modal] = useState(false)
     const [openSelectTokenModal, setOpenSelectTokenModal] = useState(false)
@@ -194,7 +194,7 @@ const Tokens = ({ marketData }) => {
                     await promise
 
                     const walletTokenBalance = (
-                        await multiSigWallet.tokenBalance(
+                        await multiSigWalletB.tokenBalance(
                             tokenDetail.contract_addresses[network]
                         )
                     ).toString()
@@ -212,9 +212,9 @@ const Tokens = ({ marketData }) => {
     }
 
     const checkEvents = async () => {
-        const lastestBlockNumber = await provider.getBlockNumber()
+        const lastestBlockNumber = await providerB.getBlockNumber()
 
-        multiSigWallet.on("Erc20Deposit", async (...args) => {
+        multiSigWalletB.on("Erc20Deposit", async (...args) => {
             const lastEvent = args[args.length - 1]
             if (lastEvent.blockNumber <= lastestBlockNumber) return
             await updatePage()
