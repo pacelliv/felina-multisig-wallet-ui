@@ -213,10 +213,10 @@ const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
             transactionsList.length.toString(),
             formData.description
         )
-        // await submit({
-        //     onSuccess: handleSuccess,
-        //     onError: (error) => console.log(error),
-        // })
+        await submit({
+            onSuccess: handleSuccess,
+            onError: (error) => console.log(error),
+        })
     }
 
     const handleSuccess = async (tx) => {
