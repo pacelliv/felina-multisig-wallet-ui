@@ -24,7 +24,7 @@ const handler = async (req, res) => {
         )
     } catch (e) {
         const error = e.toString()
-        res.status(400).json({ error })
+        res.status(400).send({ error })
     }
 
     if (req.method === "POST") {
@@ -42,10 +42,10 @@ const handler = async (req, res) => {
                 )
             }
 
-            res.status(201).json({ success: true })
+            res.status(201).send({ success: true })
         } catch (e) {
             const error = e.toString()
-            res.status(400).json({ error })
+            res.status(400).send({ error })
         }
     } else {
         try {
@@ -60,10 +60,10 @@ const handler = async (req, res) => {
                 "./src/database/transactionsDetails.json",
                 JSON.stringify(transactionsDetails)
             )
-            res.status(201).json({ success: true })
+            res.status(201).send({ success: true })
         } catch (e) {
             const error = e.toString()
-            res.status(400).json({ error })
+            res.status(400).send({ error })
         }
     }
 }

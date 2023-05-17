@@ -24,7 +24,7 @@ const handler = async (req, res) => {
         )
     } catch (e) {
         const error = e.toString()
-        res.status(400).json({ error })
+        res.status(400).send({ error })
     }
 
     try {
@@ -44,10 +44,10 @@ const handler = async (req, res) => {
             )
         }
 
-        res.status(201).json({ success: true })
+        res.status(201).send({ success: true })
     } catch (e) {
         const error = e.toString()
-        res.status(400).json({ error })
+        res.status(400).send({ error })
     }
 }
 

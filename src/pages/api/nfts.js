@@ -31,7 +31,7 @@ const handler = async (req, res) => {
         )
     } catch (e) {
         const error = e.toString()
-        res.status(400).json({ error })
+        res.status(400).send({ error })
     }
 
     if (req.method === "POST") {
@@ -59,19 +59,19 @@ const handler = async (req, res) => {
                     JSON.stringify(nftsDetails)
                 )
 
-                res.status(201).json({
+                res.status(201).send({
                     message: "token stored",
                     success: true,
                 })
             } else {
-                res.status(400).json({
+                res.status(400).send({
                     message: "this token is already stored",
                     success: false,
                 })
             }
         } catch (e) {
             const error = e.toString()
-            res.status(400).json({ error, success: false })
+            res.status(400).send({ error, success: false })
         }
     } else {
         try {
