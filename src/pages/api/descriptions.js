@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
-import path from "path"
-import { cwd } from "process"
+// import path from "path"
+// import { cwd } from "process"
 
 const handler = async (req, res) => {
     if (req.method !== "POST") {
@@ -9,14 +9,14 @@ const handler = async (req, res) => {
     }
 
     let transactionsDescriptions
-    const transactionsDescriptionsDirectory = path.join(
-        cwd(),
-        "src/database/transactionsDescriptions.json"
-    )
+    // const transactionsDescriptionsDirectory = path.join(
+    //     cwd(),
+    //     "./src/database/transactionsDescriptions.json"
+    // )
 
     try {
         transactionsDescriptions = JSON.parse(
-            await fs.readFile(transactionsDescriptionsDirectory, {
+            await fs.readFile("./src/database/transactionsDescriptions.json", {
                 encoding: "utf8",
             })
         )
@@ -28,10 +28,9 @@ const handler = async (req, res) => {
     if (req.method === "POST") {
         try {
             const { id, description } = req.body
-            console.log(transactionsDescriptions)
             transactionsDescriptions[id] = description
             await fs.writeFile(
-                transactionsDescriptionsDirectory,
+                "./src/database/transactionsDescriptions.json",
                 JSON.stringify(transactionsDescriptions)
             )
             res.status(201).json({ success: true })

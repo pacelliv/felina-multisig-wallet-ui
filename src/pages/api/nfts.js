@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
-import path from "path"
-import { cwd } from "process"
+// import path from "path"
+// import { cwd } from "process"
 
 const getIndex = (nftsDetails, nftAddress, tokenId) => {
     return nftsDetails.nftsDetails.findIndex(
@@ -18,14 +18,14 @@ const handler = async (req, res) => {
     }
 
     let nftsDetails
-    const nftsDetailsDirectory = path.join(
-        cwd(),
-        "src/database/nftsDetails.json"
-    )
+    // const nftsDetailsDirectory = path.join(
+    //     cwd(),
+    //     "src/database/nftsDetails.json"
+    // )
 
     try {
         nftsDetails = JSON.parse(
-            await fs.readFile(nftsDetailsDirectory, {
+            await fs.readFile("./src/database/nftsDetails.json", {
                 encoding: "utf8",
             })
         )
