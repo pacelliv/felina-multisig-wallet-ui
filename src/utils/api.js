@@ -1,15 +1,12 @@
 export const addTransactionDetail = async (transaction) => {
     try {
-        await fetch(
-            "https://felina-multisig-wallet-ui.vercel.app/api/transactions",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(transaction),
-            }
-        )
+        await fetch("/api/transactions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(transaction),
+        })
     } catch (error) {
         console.log(error)
     }
