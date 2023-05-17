@@ -85,7 +85,7 @@ export const deleteNftDetail = async (nftAddress, tokenId) => {
 
 export const addTransactionDescription = async (id, description) => {
     try {
-        const res = await fetch("/api/transactions", {
+        const res = await fetch("/api/descriptions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
