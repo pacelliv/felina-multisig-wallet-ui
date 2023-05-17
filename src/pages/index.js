@@ -250,7 +250,7 @@ const Home = () => {
 
     const addTransactionDescription = async (id, description) => {
         try {
-            await fetch("/api/transactions", {
+            await fetch("/api/descriptions", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
