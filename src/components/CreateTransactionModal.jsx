@@ -5,7 +5,7 @@ import { useWeb3Contract } from "react-moralis"
 import { walletAbi } from "../constants"
 import { Web3Context } from "@/context/Web3Context"
 import { ethers } from "ethers"
-import { addTransactionDescription } from "@/utils/api"
+// import { addTransactionDescription } from "@/utils/api"
 
 const Container = styled.div`
     position: fixed;
@@ -217,6 +217,20 @@ const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
             onSuccess: handleSuccess,
             onError: (error) => console.log(error),
         })
+    }
+
+    const addTransactionDescription = async (id, description) => {
+        try {
+            await fetch("/api/descriptions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id, description }),
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleSuccess = async (tx) => {
