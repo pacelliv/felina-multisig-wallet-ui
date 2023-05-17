@@ -4,9 +4,9 @@ import { promises as fs } from "fs"
 import { transactionsDetails } from "@/database"
 
 const handler = async (req, res) => {
-    if (req.method !== "POST" && req.method !== "PUT") {
+    if (req.method !== "POST" && req.method !== "PUT" && req.method !== "GET") {
         res.status(405).send({
-            message: "Only POST and PUT requests allowed",
+            message: "Only GET, POST and PUT requests allowed",
         })
         return
     }
@@ -48,7 +48,7 @@ const handler = async (req, res) => {
             const error = e.toString()
             res.status(400).send({ error })
         }
-    } else {
+    } else if (req.method === "PUT") {
         try {
             const { id } = req.body
 
@@ -62,6 +62,13 @@ const handler = async (req, res) => {
                 JSON.stringify(transactionsDetails)
             )
             res.status(201).send({ success: true })
+        } catch (e) {
+            const error = e.toString()
+            res.status(400).send({ error })
+        }
+    } else if (req.method === "GET") {
+        try {
+            res.status(200).json(transactionsDetails.transactionsDetails)
         } catch (e) {
             const error = e.toString()
             res.status(400).send({ error })
