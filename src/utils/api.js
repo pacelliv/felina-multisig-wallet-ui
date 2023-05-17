@@ -1,15 +1,12 @@
 export const addTransactionDetail = async (transaction) => {
     try {
-        await fetch(
-            "https://felina-multisig-wallet-ui.vercel.app/api/transactions",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(transaction),
-            }
-        )
+        await fetch("/api/transactions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(transaction),
+        })
     } catch (error) {
         console.log(error)
     }
@@ -17,16 +14,13 @@ export const addTransactionDetail = async (transaction) => {
 
 export const updateTransactionDetail = async (id) => {
     try {
-        await fetch(
-            "https://felina-multisig-wallet-ui.vercel.app/api/transactions",
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id }),
-            }
-        )
+        await fetch("/api/transactions", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id }),
+        })
     } catch (error) {
         console.log(error)
     }
@@ -34,7 +28,7 @@ export const updateTransactionDetail = async (id) => {
 
 export const addNftDetail = async (nftDetail) => {
     try {
-        await fetch("https://felina-multisig-wallet-ui.vercel.app/api/nfts", {
+        await fetch("/api/nfts", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -48,12 +42,9 @@ export const addNftDetail = async (nftDetail) => {
 
 export const deleteNftDetail = async (nftAddress, tokenId) => {
     try {
-        await fetch(
-            `https://felina-multisig-wallet-ui.vercel.app/api/nfts?nftAddress=${nftAddress}&tokenId=${tokenId}`,
-            {
-                method: "DELETE",
-            }
-        )
+        await fetch(`/api/nfts?nftAddress=${nftAddress}&tokenId=${tokenId}`, {
+            method: "DELETE",
+        })
     } catch (error) {
         console.log(error)
     }
@@ -61,16 +52,13 @@ export const deleteNftDetail = async (nftAddress, tokenId) => {
 
 export const addTransactionDescription = async (id, description) => {
     try {
-        await fetch(
-            "https://felina-multisig-wallet-ui.vercel.app/api/descriptions",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id, description }),
-            }
-        )
+        await fetch("/api/descriptions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id, description }),
+        })
     } catch (error) {
         console.log(error)
     }
