@@ -1,6 +1,7 @@
 import { promises as fs } from "fs"
 // import path from "path"
 // import { cwd } from "process"
+import { nftsDetails } from "@/database"
 
 const getIndex = (nftsDetails, nftAddress, tokenId) => {
     return nftsDetails.nftsDetails.findIndex(
@@ -17,22 +18,22 @@ const handler = async (req, res) => {
         return
     }
 
-    let nftsDetails
+    // let nftsDetails
     // const nftsDetailsDirectory = path.join(
     //     cwd(),
     //     "src/database/nftsDetails.json"
     // )
 
-    try {
-        nftsDetails = JSON.parse(
-            await fs.readFile("./src/database/nftsDetails.json", {
-                encoding: "utf8",
-            })
-        )
-    } catch (e) {
-        const error = e.toString()
-        res.status(400).send({ error })
-    }
+    // try {
+    //     nftsDetails = JSON.parse(
+    //         await fs.readFile("./src/database/nftsDetails.json", {
+    //             encoding: "utf8",
+    //         })
+    //     )
+    // } catch (e) {
+    //     const error = e.toString()
+    //     res.status(400).send({ error })
+    // }
 
     if (req.method === "POST") {
         try {

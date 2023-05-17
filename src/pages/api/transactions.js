@@ -1,6 +1,7 @@
 import { promises as fs } from "fs"
 // import path from "path"
 // import { cwd } from "process"
+import { transactionsDetails } from "@/database"
 
 const handler = async (req, res) => {
     if (req.method !== "POST" && req.method !== "PUT") {
@@ -10,22 +11,22 @@ const handler = async (req, res) => {
         return
     }
 
-    let transactionsDetails
-    // const transactionsDetailsDirectory = path.join(
-    //     cwd(),
-    //     "src/database/transactionsDetails.json"
-    // )
+    // let transactionsDetails
+    // // const transactionsDetailsDirectory = path.join(
+    // //     cwd(),
+    // //     "src/database/transactionsDetails.json"
+    // // )
 
-    try {
-        transactionsDetails = JSON.parse(
-            await fs.readFile("./src/database/transactionsDetails.json", {
-                encoding: "utf8",
-            })
-        )
-    } catch (e) {
-        const error = e.toString()
-        res.status(400).send({ error })
-    }
+    // try {
+    //     transactionsDetails = JSON.parse(
+    //         await fs.readFile("./src/database/transactionsDetails.json", {
+    //             encoding: "utf8",
+    //         })
+    //     )
+    // } catch (e) {
+    //     const error = e.toString()
+    //     res.status(400).send({ error })
+    // }
 
     if (req.method === "POST") {
         try {

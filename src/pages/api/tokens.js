@@ -1,6 +1,7 @@
 import { promises as fs } from "fs"
 // import path from "path"
 // import { cwd } from "process"
+import { tokensDetails } from "@/database"
 
 const handler = async (req, res) => {
     if (req.method !== "PUT") {
@@ -10,22 +11,22 @@ const handler = async (req, res) => {
         return
     }
 
-    let tokensDetails
-    // const tokensDetailsDirectory = path.join(
-    //     cwd(),
-    //     "src/database/tokensDetails.json"
-    // )
+    // let tokensDetails
+    // // const tokensDetailsDirectory = path.join(
+    // //     cwd(),
+    // //     "src/database/tokensDetails.json"
+    // // )
 
-    try {
-        tokensDetails = JSON.parse(
-            await fs.readFile("./src/database/tokensDetails.json", {
-                encoding: "utf8",
-            })
-        )
-    } catch (e) {
-        const error = e.toString()
-        res.status(400).send({ error })
-    }
+    // try {
+    //     tokensDetails = JSON.parse(
+    //         await fs.readFile("./src/database/tokensDetails.json", {
+    //             encoding: "utf8",
+    //         })
+    //     )
+    // } catch (e) {
+    //     const error = e.toString()
+    //     res.status(400).send({ error })
+    // }
 
     try {
         const { tokenAddress, newTokenBalance, network } = req.body
