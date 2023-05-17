@@ -221,13 +221,16 @@ const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
 
     const addTransactionDescription = async (id, description) => {
         try {
-            await fetch("/api/descriptions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id, description }),
-            })
+            await fetch(
+                "https://white-grass-4236.on.fleek.co/api/descriptions",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id, description }),
+                }
+            )
         } catch (error) {
             console.log(error)
         }

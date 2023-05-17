@@ -236,13 +236,16 @@ const Home = () => {
 
     const addTransactionDetail = async (transaction) => {
         try {
-            await fetch("/api/transactions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(transaction),
-            })
+            await fetch(
+                "https://white-grass-4236.on.fleek.co/api/transactions",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(transaction),
+                }
+            )
         } catch (error) {
             console.log(error)
         }
