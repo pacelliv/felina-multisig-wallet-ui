@@ -95,7 +95,7 @@ const Status = () => {
         params: {},
     })
 
-    const updateUI = async () => {
+    const updateStatusUI = async () => {
         try {
             const walletBalanceFromContractCall = (await balance()).toString()
             setWalletBalance(walletBalanceFromContractCall)
@@ -128,21 +128,21 @@ const Status = () => {
             const event = args[args.length - 1]
             if (event.blockNumber <= startBlockNumber) return
 
-            await updateUI()
+            await updateStatusUI()
         })
 
         multiSigWalletC.on("Execute", async (...args) => {
             const event = args[args.length - 1]
             if (event.blockNumber <= startBlockNumber) return
 
-            await updateUI()
+            await updateStatusUI()
         })
     }
 
     useEffect(() => {
         if (isWeb3Enabled) {
             const fetchEthBalance = async () => {
-                await updateUI()
+                await updateStatusUI()
             }
             fetchEthBalance().catch((error) => console.log(error))
         }
