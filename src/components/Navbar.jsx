@@ -26,7 +26,7 @@ const Nav = styled.nav`
 
     .navbar-link {
         font-weight: 600;
-        font-size: 1.1rem;
+        font-size: 1rem;
         padding: 0.5em 0.9em;
         border-radius: 10px;
         color: #4d4d4d;
