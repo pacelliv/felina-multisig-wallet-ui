@@ -8,6 +8,8 @@ export const getPendingTransactions = async () => {
                     "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                 },
+                mode: "cors",
+                credentials: "omit",
             }
         )
 
@@ -74,6 +76,8 @@ export const getNfts = async () => {
                     "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                 },
+                mode: "cors",
+                credentials: "omit",
             }
         )
         const { nfts } = await res.json()
