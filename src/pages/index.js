@@ -10,17 +10,13 @@ import { ethers } from "ethers"
 import { FaTimes } from "react-icons/fa"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
 import {
-    transactionsDetails,
-    nftsDetails,
-    transactionsDescriptions,
-} from "../database"
-import {
+    getPendingTransactions,
     updateTransactionDetail,
     deleteNftDetail,
-    //    addTransactionDetail,
+    addTransactionDetail,
+    getNfts,
 } from "@/utils/api"
 import { nftAbi } from "@/constants"
-import { useWeb3Contract } from "react-moralis"
 
 const Container = styled.div`
     .modal-backdrop {
@@ -190,7 +186,6 @@ const Home = () => {
         multiSigWalletA,
         contractAddress,
     } = useContext(Web3Context)
-    const { runContractFunction } = useWeb3Contract()
     const [openTransactionModal, setOpenTransactionModal] = useState(false)
     const [transactions, setTransactions] = useState([])
     const [transaction, setTransaction] = useState({
@@ -213,52 +208,8 @@ const Home = () => {
         e.stopPropagation()
         if (sender.toLowerCase() === account) {
             await updateTransactionDetail(txId)
-        }
-    }
-
-    const getNftOwner = async (nftAddress, tokenId) => {
-        const ownerOfOptions = {
-            abi: nftAbi,
-            contractAddress: nftAddress,
-            functionName: "ownerOf",
-            params: { tokenId },
-        }
-
-        try {
-            const ownerOf = await runContractFunction({
-                params: ownerOfOptions,
-            })
-            return ownerOf
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    const addTransactionDetail = async (transaction) => {
-        try {
-            await fetch("/api/transactions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(transaction),
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    const addTransactionDescription = async (id, description) => {
-        try {
-            await fetch("/api/descriptions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id, description }),
-            })
-        } catch (error) {
-            console.log(error)
+            const pendingTransactions = await getPendingTransactions()
+            setTransactions(pendingTransactions)
         }
     }
 
@@ -278,6 +229,9 @@ const Home = () => {
                 executed: false,
                 hash: event.transactionHash,
             })
+
+            const pendingTransactions = await getPendingTransactions()
+            setTransactions(pendingTransactions)
         })
 
         multiSigWalletA.on("Execute", async (...args) => {
@@ -290,31 +244,21 @@ const Home = () => {
             const to = event.args[2]
             const data = event.args[3]
 
-            const txIndex = transactionsDetails.transactionsDetails.findIndex(
-                (transactionDetail) => transactionDetail.id === txId
-            )
+            await updateTransactionDetail(txId)
+            const pendingTransactions = await getPendingTransactions()
+            setTransactions(pendingTransactions)
 
-            const nftIndex = nftsDetails.nftsDetails.findIndex(
-                (nftDetail) => nftDetail.nftAddress === to
-            )
+            const ownedNfts = await getNfts()
+            const nft = ownedNfts.find((nft) => nft.nftAddress === to)
 
-            if (txIndex != -1) {
-                await updateTransactionDetail(txId)
-            }
-
-            if (nftIndex != -1) {
+            if (nft) {
                 const iface = new ethers.utils.Interface(nftAbi)
-                const decodedData = iface.parseTransaction({ data })
-                const nftOwner = await getNftOwner(
-                    to,
-                    decodedData.args.tokenId.toString()
-                )
-
-                if (nftOwner != contractAddress) {
-                    await deleteNftDetail(
-                        to,
-                        decodedData.args.tokenId.toString()
-                    )
+                const { name, args } = iface.parseTransaction({ data })
+                if (
+                    (name === "safeTransferFrom" || name === "transferFrom") &&
+                    args[0] === contractAddress
+                ) {
+                    await deleteNftDetail(event.args[2], args[2].toString())
                 }
             }
         })
@@ -322,8 +266,16 @@ const Home = () => {
 
     useEffect(() => {
         if (isWeb3Enabled) {
-            setTransactions(transactionsDetails.transactionsDetails)
+            const fetchTransactions = async () => {
+                const pendingTransactions = await getPendingTransactions()
+                setTransactions(pendingTransactions)
+            }
+            fetchTransactions().catch((error) => console.log(error))
+        }
+    }, [isWeb3Enabled])
 
+    useEffect(() => {
+        if (isWeb3Enabled) {
             const subscribeToEvents = async () => {
                 await listenForEvents()
             }
@@ -341,7 +293,6 @@ const Home = () => {
             {openCreateTransactionModal && (
                 <CreateTransactionModal
                     toggleCreateTransactionModal={toggleCreateTransactionModal}
-                    addTransactionDescription={addTransactionDescription}
                 />
             )}
             {openTransactionModal && (
@@ -386,89 +337,73 @@ const Home = () => {
                 </ButtonsContainer>
                 <div className="transactions-wrapper" id="transactions-wrapper">
                     {transactions.length > 0 &&
-                        transactions
-                            .filter((transaction) => !transaction.executed)
-                            .map((transaction, i) => (
-                                <div
-                                    key={i}
-                                    className="transaction-card"
-                                    onClick={() => {
-                                        setTransaction({
-                                            index: transaction.id,
-                                            to: transaction.to,
-                                            amount: ethers.utils.formatEther(
-                                                transaction.amount
-                                            ),
-                                            data: transaction.data,
-                                            executed: String(
-                                                transaction.executed
-                                            ),
-                                            sender: transaction.sender,
-                                            hash: transaction.hash,
-                                            description:
-                                                transactionsDescriptions[
-                                                    transaction.id
-                                                ],
-                                        })
-                                        toggleTransactionModal()
-                                    }}
+                        transactions.map((transaction, i) => (
+                            <div
+                                key={i}
+                                className="transaction-card"
+                                onClick={() => {
+                                    setTransaction({
+                                        index: transaction.id,
+                                        to: transaction.to,
+                                        amount: ethers.utils.formatEther(
+                                            transaction.amount
+                                        ),
+                                        data: transaction.data,
+                                        executed: String(transaction.executed),
+                                        sender: transaction.sender,
+                                        hash: transaction.hash,
+                                        description: transaction.description,
+                                    })
+                                    toggleTransactionModal()
+                                }}
+                            >
+                                <BsFillArrowUpRightSquareFill className="arrow-icon" />
+                                <button
+                                    className="hide-transaction-button"
+                                    onClick={async (event) =>
+                                        await hideTransaction(
+                                            event,
+                                            transaction.sender,
+                                            transaction.id
+                                        )
+                                    }
                                 >
-                                    <BsFillArrowUpRightSquareFill className="arrow-icon" />
-                                    <button
-                                        className="hide-transaction-button"
-                                        onClick={async (event) =>
-                                            await hideTransaction(
-                                                event,
-                                                transaction.sender,
-                                                transaction.id
-                                            )
-                                        }
-                                    >
-                                        <FaTimes className="hide-transaction-button-icon" />
-                                    </button>
+                                    <FaTimes className="hide-transaction-button-icon" />
+                                </button>
 
-                                    <div className="transaction-icon">
-                                        <span className="transaction-icon-text">
-                                            Tx
-                                        </span>
-                                    </div>
-                                    <div className="transaction">
-                                        <p className="transaction-id">
-                                            Tx #{transaction.id}
-                                        </p>
-                                        <p className="transaction-sender">
-                                            Proposer:{" "}
-                                            <span className="value">
-                                                {transaction.sender.slice(
-                                                    0,
-                                                    5
-                                                ) +
-                                                    "..." +
-                                                    transaction.sender.slice(
-                                                        transaction.sender
-                                                            .length - 4
-                                                    )}{" "}
-                                            </span>
-                                        </p>
-                                        <p className="transaction-description">
-                                            Description:{" "}
-                                            <span className="value">
-                                                {transactionsDescriptions[
-                                                    transaction.id
-                                                ]
-                                                    ? transactionsDescriptions[
-                                                          transaction.id
-                                                      ]
-                                                    : "Transaction description not avaliable"}
-                                            </span>
-                                        </p>
-                                    </div>
+                                <div className="transaction-icon">
+                                    <span className="transaction-icon-text">
+                                        Tx
+                                    </span>
                                 </div>
-                            ))}
+                                <div className="transaction">
+                                    <p className="transaction-id">
+                                        Tx #{transaction.id}
+                                    </p>
+                                    <p className="transaction-sender">
+                                        Proposer:{" "}
+                                        <span className="value">
+                                            {transaction.sender.slice(0, 5) +
+                                                "..." +
+                                                transaction.sender.slice(
+                                                    transaction.sender.length -
+                                                        4
+                                                )}{" "}
+                                        </span>
+                                    </p>
+                                    <p className="transaction-description">
+                                        Description:{" "}
+                                        <span className="value">
+                                            {transaction.description
+                                                ? transaction.description
+                                                : "Transaction description not avaliable"}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
 
-                    {transactionsDetails.transactionsDetails.every(
-                        hasPendingTransactions
-                    ) && (
+                    {transactions.every(hasPendingTransactions) && (
                         <div className="transaction-card">
                             <p>No pending transactions</p>
                         </div>
