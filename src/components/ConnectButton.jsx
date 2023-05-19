@@ -8,18 +8,19 @@ import { FaWallet } from "react-icons/fa"
 const Button = styled.button`
     padding: 0.6em 0.9em;
     font-family: inherit;
-    background-color: white;
+    background-color: #038bd0;
     font-weight: 500;
-    border: 1px #bbbbbb solid;
+    border: none;
     display: flex;
     align-items: center;
     gap: 7px;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    color: #ffead0;
     border-radius: 10px;
     transition: all 0.4s ease;
 
     &:hover:not([disabled]) {
-        background-color: #f3f3f3;
+        background-color: #0f7fb6;
     }
 
     @media (max-width: 500px) {
