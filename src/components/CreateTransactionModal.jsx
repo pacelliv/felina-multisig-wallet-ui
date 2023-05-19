@@ -5,7 +5,7 @@ import { useWeb3Contract } from "react-moralis"
 import { walletAbi } from "../constants"
 import { Web3Context } from "@/context/Web3Context"
 import { ethers } from "ethers"
-// import { addTransactionDescription } from "@/utils/api"
+import { addTransactionDescription } from "@/utils/api"
 
 const Container = styled.div`
     position: fixed;
@@ -166,10 +166,7 @@ const Container = styled.div`
     }
 `
 
-const CreateTransactionModal = ({
-    toggleCreateTransactionModal,
-    addTransactionDescription,
-}) => {
+const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
     const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
     const [formData, setFormData] = useState({
