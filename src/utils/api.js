@@ -8,7 +8,7 @@ export const getPendingTransactions = async () => {
                     "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                 },
-                credentials: "include",
+                credentials: "omit",
             }
         )
 
@@ -34,7 +34,7 @@ export const addTransactionDetail = async (transaction) => {
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                     "Content-Type": "application/json",
                 },
-                credentials: "include",
+                credentials: "omit",
                 body: JSON.stringify(transaction),
             }
         )
@@ -54,7 +54,7 @@ export const updateTransactionDetail = async (id) => {
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                     "Content-Type": "application/json",
                 },
-                credentials: "include",
+                credentials: "omit",
                 body: JSON.stringify({ id }),
             }
         )
@@ -73,7 +73,7 @@ export const getNfts = async () => {
                     "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                 },
-                credentials: "include",
+                credentials: "omit",
             }
         )
         const { nfts } = await res.json()
@@ -95,7 +95,7 @@ export const addNftDetail = async (nftDetail) => {
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                     "Content-Type": "application/json",
                 },
-                credentials: "include",
+                credentials: "omit",
                 body: JSON.stringify(nftDetail),
             }
         )
@@ -114,7 +114,7 @@ export const deleteNftDetail = async (nftAddress, tokenId) => {
                     "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                 },
-                credentials: "include",
+                credentials: "omit",
             }
         )
     } catch (error) {
@@ -133,7 +133,7 @@ export const addTransactionDescription = async (id, description) => {
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                     "Content-Type": "application/json",
                 },
-                credentials: "include",
+                credentials: "omit",
                 body: JSON.stringify({ id, description }),
             }
         )
