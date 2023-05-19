@@ -8,8 +8,7 @@ export const getPendingTransactions = async () => {
                     "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                 },
-                mode: "cors",
-                credentials: "omit",
+                credentials: "include",
             }
         )
 
@@ -35,8 +34,7 @@ export const addTransactionDetail = async (transaction) => {
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                     "Content-Type": "application/json",
                 },
-                mode: "cors",
-                credentials: "omit",
+                credentials: "include",
                 body: JSON.stringify(transaction),
             }
         )
@@ -56,8 +54,7 @@ export const updateTransactionDetail = async (id) => {
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                     "Content-Type": "application/json",
                 },
-                mode: "cors",
-                credentials: "omit",
+                credentials: "include",
                 body: JSON.stringify({ id }),
             }
         )
@@ -76,8 +73,7 @@ export const getNfts = async () => {
                     "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                 },
-                mode: "cors",
-                credentials: "omit",
+                credentials: "include",
             }
         )
         const { nfts } = await res.json()
@@ -99,8 +95,7 @@ export const addNftDetail = async (nftDetail) => {
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                     "Content-Type": "application/json",
                 },
-                mode: "cors",
-                credentials: "omit",
+                credentials: "include",
                 body: JSON.stringify(nftDetail),
             }
         )
@@ -119,8 +114,7 @@ export const deleteNftDetail = async (nftAddress, tokenId) => {
                     "X-RapidAPI-Key": process.env.NEXT_PUBLIC_X_RAPID_API_KEY,
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                 },
-                mode: "cors",
-                credentials: "omit",
+                credentials: "include",
             }
         )
     } catch (error) {
@@ -139,8 +133,7 @@ export const addTransactionDescription = async (id, description) => {
                     "X-RapidAPI-Host": process.env.NEXT_PUBLIC_X_RAPID_API_HOST,
                     "Content-Type": "application/json",
                 },
-                mode: "cors",
-                credentials: "omit",
+                credentials: "include",
                 body: JSON.stringify({ id, description }),
             }
         )
