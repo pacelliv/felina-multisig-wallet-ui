@@ -4,10 +4,10 @@ import styled from "styled-components"
 import { useContext, useEffect, useState } from "react"
 import { Web3Context } from "@/context/Web3Context"
 import { BsFillArrowUpRightSquareFill } from "react-icons/bs"
-import { nftsDetails } from "../database"
 import { FaEthereum } from "react-icons/fa"
 import { AiOutlineCheck } from "react-icons/ai"
 import { MdOutlineContentCopy } from "react-icons/md"
+import { getNfts } from "@/utils/api"
 
 const Container = styled.div`
     span {
@@ -172,7 +172,8 @@ const ButtonsContainer = styled.div`
 `
 
 const Nfts = () => {
-    const { isWeb3Enabled } = useContext(Web3Context)
+    const { isWeb3Enabled, multiSigWalletB, providerB } =
+        useContext(Web3Context)
     const [openDepositNftModal, setOpenDepositNftModal] = useState(false)
     const [nfts, setNfts] = useState([])
 
@@ -187,9 +188,26 @@ const Nfts = () => {
         }
     }
 
+    const checkNftDepositEvent = async () => {
+        const latestBlockNumber = await providerB.getBlockNumber()
+
+        multiSigWalletB.on("NftDeposit", async (...args) => {
+            const event = args[args.length - 1]
+            if (event.blockNumber <= latestBlockNumber) return
+
+            const ownedNfts = await getNfts()
+            setNfts(ownedNfts)
+        })
+    }
+
     useEffect(() => {
         if (isWeb3Enabled) {
-            setNfts(nftsDetails.nftsDetails)
+            const fetchOwnedNfts = async () => {
+                await checkNftDepositEvent()
+                const ownedNfts = await getNfts()
+                setNfts(ownedNfts)
+            }
+            fetchOwnedNfts().catch((error) => console.log(error))
         }
     }, [isWeb3Enabled])
 
@@ -277,7 +295,7 @@ const Nfts = () => {
                         </div>
                     ))}
                 </div>
-                {nftsDetails.nftsDetails.length === 0 && (
+                {nfts.length === 0 && (
                     <div className="nft-card width">
                         <p>No NFT balance</p>
                     </div>
