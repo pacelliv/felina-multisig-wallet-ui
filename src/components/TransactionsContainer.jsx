@@ -91,6 +91,7 @@ const TransactionsContainer = ({
     transactions,
     setTransaction,
     hideTransaction,
+    toggleTransactionModal,
 }) => {
     return (
         <TransactionsWrapper id="transactions-wrapper">
