@@ -251,6 +251,7 @@ const Home = () => {
                         transactions={transactions}
                         setTransaction={setTransaction}
                         hideTransaction={hideTransaction}
+                        toggleTransactionModal={toggleTransactionModal}
                     />
                 ) : (
                     <div className="transaction-card">
