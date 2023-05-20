@@ -20,13 +20,17 @@ const Container = styled.div`
 
     .content {
         padding: 0 2em;
-        margin-bottom: 2.5em;
+        margin-bottom: 5em;
     }
 
     @media (max-width: 870px) {
         .content {
             padding: 0 0.8em;
         }
+    }
+
+    @media (max-width: 450px) {
+        margin-bottom: 2.5em;
     }
 
     @media (max-width: 870px) {
