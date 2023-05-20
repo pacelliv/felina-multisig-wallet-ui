@@ -8,20 +8,6 @@ const TransactionsWrapper = styled.div`
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: 20px;
 
-    .transaction-card {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin: 0.4em 0;
-        border-radius: 10px;
-        padding: 1.2em 1em 1.2em 0.9em;
-        background-color: #ffead0;
-        color: #4d4d4d;
-        cursor: pointer;
-        transition: all 0.4s ease;
-        position: relative;
-    }
-
     .arrow-icon {
         position: absolute;
         font-size: 0.95rem;
@@ -106,8 +92,6 @@ const TransactionsContainer = ({
     setTransaction,
     hideTransaction,
 }) => {
-    const hasPendingTransactions = (transaction) => transaction.executed
-
     return (
         <TransactionsWrapper id="transactions-wrapper">
             {transactions &&
@@ -180,13 +164,6 @@ const TransactionsContainer = ({
                             </div>
                         </div>
                     )
-                )}
-
-            {(transactions !== "undefined" || transactions !== "null") &&
-                transactions.every(hasPendingTransactions) && (
-                    <div className="transaction-card">
-                        <p>No pending transactions</p>
-                    </div>
                 )}
         </TransactionsWrapper>
     )
