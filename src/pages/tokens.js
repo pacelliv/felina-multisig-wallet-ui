@@ -3,7 +3,6 @@ import DepositErc20Modal from "@/components/DepositErc20Modal"
 import SelectTokenModal from "@/components/SelectTokenModal"
 import styled from "styled-components"
 import { useContext, useEffect, useState } from "react"
-import { Context } from "@/context/Context"
 import { Web3Context } from "@/context/Web3Context"
 import { ethers } from "ethers"
 import { tokensDetails } from "../database"
@@ -150,7 +149,6 @@ const ButtonsContainer = styled.div`
 `
 
 const Tokens = ({ marketData }) => {
-    const { windowWidth } = useContext(Context)
     const { network, isWeb3Enabled, multiSigWalletB, providerB } =
         useContext(Web3Context)
     const [openDepositErc20Modal, setOpenDepositErc20Modal] = useState(false)
@@ -299,21 +297,17 @@ const Tokens = ({ marketData }) => {
                                         <p className="token-address">
                                             Contract address:{" "}
                                             <span className="value">
-                                                {windowWidth < 985
-                                                    ? contract_addresses[
-                                                          network
-                                                      ].slice(0, 7) +
-                                                      "..." +
-                                                      contract_addresses[
-                                                          network
-                                                      ].slice(
-                                                          contract_addresses[
-                                                              network
-                                                          ].length - 6
-                                                      )
-                                                    : contract_addresses[
-                                                          network
-                                                      ]}{" "}
+                                                {contract_addresses[
+                                                    network
+                                                ].slice(0, 6) +
+                                                    "..." +
+                                                    contract_addresses[
+                                                        network
+                                                    ].slice(
+                                                        contract_addresses[
+                                                            network
+                                                        ].length - 5
+                                                    )}{" "}
                                             </span>
                                             <button
                                                 id={`${id}`}
