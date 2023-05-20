@@ -4,6 +4,7 @@ import { useState, useContext } from "react"
 import { useWeb3Contract } from "react-moralis"
 import { walletAbi, erc20Abi } from "../constants"
 import { Web3Context } from "@/context/Web3Context"
+import { ethers } from "ethers"
 
 const Container = styled.div`
     position: fixed;
@@ -222,7 +223,13 @@ const DepositErc20Modal = ({
         abi: erc20Abi,
         contractAddress: token.contractAddress,
         functionName: "approve",
-        params: { spender: contractAddress, amount: formData.amount },
+        params: {
+            spender: contractAddress,
+            amount: ethers.utils.parseUnits(
+                formData.amount ? formData.amount : "0",
+                token.decimals
+            ),
+        },
     })
 
     const {
@@ -233,7 +240,13 @@ const DepositErc20Modal = ({
         abi: walletAbi,
         contractAddress,
         functionName: "depositErc20",
-        params: { _token: token.contractAddress, _amount: formData.amount },
+        params: {
+            _token: token.contractAddress,
+            _amount: ethers.utils.parseUnits(
+                formData.amount ? formData.amount : "0",
+                token.decimals
+            ),
+        },
     })
 
     const handleChange = (e) => {
@@ -309,16 +322,17 @@ const DepositErc20Modal = ({
                 </p>
             </div>
             <p className="modal-instructions margin-top">
-                Input the amount of tokens to deposit in wei according to the
-                example and then hit the deposit button.
+                Input the amount of tokens to deposit according to the examples
+                and then click the deposit button.
             </p>
             <form className="form" onSubmit={handleSubmit}>
                 <label htmlFor="amount" className="label">
                     Amount:
                 </label>
                 <label htmlFor="amount" className="example">
-                    Example:{" "}
-                    <code className="code-example">1000000000000000000</code>
+                    Examples: <code className="code-example">1</code>,{" "}
+                    <code className="code-example">1.5</code> or{" "}
+                    <code className="code-example">1000</code>
                 </label>
                 <input
                     onChange={handleChange}
