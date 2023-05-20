@@ -99,6 +99,7 @@ const Home = () => {
         multiSigWalletA,
         contractAddress,
     } = useContext(Web3Context)
+    const [loading, setLoading] = useState(false)
     const [openTransactionModal, setOpenTransactionModal] = useState(false)
     const [transactions, setTransactions] = useState([])
     const [transaction, setTransaction] = useState({
@@ -141,8 +142,10 @@ const Home = () => {
                 hash: event.transactionHash,
             })
 
+            setLoading(true)
             const pendingTransactions = await getPendingTransactions()
             setTransactions(pendingTransactions)
+            setLoading(false)
         })
 
         multiSigWalletA.on("Execute", async (...args) => {
@@ -177,14 +180,16 @@ const Home = () => {
 
     useEffect(() => {
         if (isWeb3Enabled) {
+            setLoading(true)
             const setUpUi = async () => {
                 await listenForEvents()
                 return await getPendingTransactions()
             }
             setUpUi()
-                .then((pendingTransactions) =>
+                .then((pendingTransactions) => {
                     setTransactions(pendingTransactions)
-                )
+                    setLoading(false)
+                })
                 .catch((error) => console.log(error))
         }
     }, [isWeb3Enabled])
@@ -250,6 +255,12 @@ const Home = () => {
                 ) : (
                     <div className="transaction-card">
                         <p>No pending transactions</p>
+                    </div>
+                )}
+
+                {loading && (
+                    <div className="transaction-card">
+                        <p>Loading...</p>
                     </div>
                 )}
             </div>
