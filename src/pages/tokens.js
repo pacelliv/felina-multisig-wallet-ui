@@ -162,8 +162,8 @@ const Tokens = ({ marketData }) => {
 
     const index = (id) => marketData.findIndex((data) => data.id === id)
 
-    const usdConversion = (id, balance) => {
-        const formattedBalance = ethers.utils.formatEther(balance)
+    const usdConversion = (id, balance, decimals) => {
+        const formattedBalance = ethers.utils.formatUnits(balance, decimals)
         const mul =
             parseInt(formattedBalance) * marketData[index(id)].current_price
         const roundedMul = (Math.round(mul * 100) / 100).toFixed(2)
@@ -271,94 +271,108 @@ const Tokens = ({ marketData }) => {
                     </button>
                 </ButtonsContainer>
                 <div className="tokens-wrapper" id="tokens-wrapper">
-                    {tokens.map((token, i) => (
-                        <div key={i} className="token-card">
-                            <div>
-                                <img
-                                    src={`${token.image.small}`}
-                                    className="token-icon"
-                                />
-                            </div>
-                            <div className="token">
-                                <p className="token-symbol">
-                                    Name:{" "}
-                                    <span className="value">{token.name}</span>
-                                </p>
-                                <div className="token-address-container">
-                                    <p className="token-address">
-                                        Contract address:{" "}
-                                        <span className="value">
-                                            {windowWidth < 985
-                                                ? token.contract_addresses[
-                                                      network
-                                                  ].slice(0, 7) +
-                                                  "..." +
-                                                  token.contract_addresses[
-                                                      network
-                                                  ].slice(
-                                                      token.contract_addresses[
+                    {tokens.map(
+                        (
+                            {
+                                id,
+                                symbol,
+                                name,
+                                image,
+                                contract_addresses,
+                                decimal_place,
+                            },
+                            i
+                        ) => (
+                            <div key={i} className="token-card">
+                                <div>
+                                    <img
+                                        src={`${image.small}`}
+                                        className="token-icon"
+                                    />
+                                </div>
+                                <div className="token">
+                                    <p className="token-symbol">
+                                        Name:{" "}
+                                        <span className="value">{name}</span>
+                                    </p>
+                                    <div className="token-address-container">
+                                        <p className="token-address">
+                                            Contract address:{" "}
+                                            <span className="value">
+                                                {windowWidth < 985
+                                                    ? contract_addresses[
                                                           network
-                                                      ].length - 6
-                                                  )
-                                                : token.contract_addresses[
-                                                      network
-                                                  ]}{" "}
-                                        </span>
-                                        <button
-                                            id={`${token.id}`}
-                                            className="copy-button"
-                                            onClick={(event) => {
-                                                navigator.clipboard.writeText(
-                                                    token.contract_addresses[
-                                                        network
-                                                    ]
-                                                )
-                                                handleClick(event, token.id)
-                                            }}
-                                        >
-                                            <MdOutlineContentCopy className="icon show" />
-                                            <AiOutlineCheck className="icon hidden" />
-                                        </button>
+                                                      ].slice(0, 7) +
+                                                      "..." +
+                                                      contract_addresses[
+                                                          network
+                                                      ].slice(
+                                                          contract_addresses[
+                                                              network
+                                                          ].length - 6
+                                                      )
+                                                    : contract_addresses[
+                                                          network
+                                                      ]}{" "}
+                                            </span>
+                                            <button
+                                                id={`${id}`}
+                                                className="copy-button"
+                                                onClick={(event) => {
+                                                    navigator.clipboard.writeText(
+                                                        contract_addresses[
+                                                            network
+                                                        ]
+                                                    )
+                                                    handleClick(event, id)
+                                                }}
+                                            >
+                                                <MdOutlineContentCopy className="icon show" />
+                                                <AiOutlineCheck className="icon hidden" />
+                                            </button>
+                                        </p>
+                                    </div>
+
+                                    <p className="token-balance">
+                                        Balance:{" "}
+                                        {loading ? (
+                                            <span className="value">
+                                                Loading...
+                                            </span>
+                                        ) : (
+                                            <span className="value">
+                                                {parseInt(
+                                                    ethers.utils.formatUnits(
+                                                        tokensBalances[i],
+                                                        decimal_place
+                                                    )
+                                                ).toLocaleString("en")}{" "}
+                                                {symbol.toUpperCase()}
+                                            </span>
+                                        )}
+                                    </p>
+
+                                    <p className="token-balance">
+                                        USD:{" "}
+                                        {loading ? (
+                                            <span className="value">
+                                                Loading...
+                                            </span>
+                                        ) : (
+                                            <span className="value">
+                                                ${" "}
+                                                {usdConversion(
+                                                    id,
+                                                    tokensBalances[i],
+                                                    decimal_place
+                                                )}
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
-
-                                <p className="token-balance">
-                                    Balance:{" "}
-                                    {loading ? (
-                                        <span className="value">
-                                            Loading...
-                                        </span>
-                                    ) : (
-                                        <span className="value">
-                                            {parseInt(
-                                                ethers.utils.formatEther(
-                                                    tokensBalances[i]
-                                                )
-                                            ).toLocaleString("en")}{" "}
-                                            {token.symbol.toUpperCase()}
-                                        </span>
-                                    )}
-                                </p>
-
-                                <p className="token-balance">
-                                    USD:{" "}
-                                    {loading ? (
-                                        <span className="value">
-                                            Loading...
-                                        </span>
-                                    ) : (
-                                        <span className="value">
-                                            ${" "}
-                                            {usdConversion(
-                                                token.id,
-                                                tokensBalances[i]
-                                            )}
-                                        </span>
-                                    )}
-                                </p>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    )}
                 </div>
             </Div>
         </Container>
