@@ -27,6 +27,20 @@ const Container = styled.div`
         background-color: rgba(0, 0, 0, 0.4);
         z-index: 20;
     }
+
+    .transaction-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0.4em 0;
+        border-radius: 10px;
+        padding: 1.2em 1em 1.2em 0.9em;
+        background-color: #ffead0;
+        color: #4d4d4d;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        position: relative;
+    }
 `
 
 const Title = styled.h1`
@@ -226,11 +240,18 @@ const Home = () => {
                         Encode data
                     </button>
                 </ButtonsContainer>
-                <TransactionsContainer
-                    transactions={transactions}
-                    setTransaction={setTransaction}
-                    hideTransaction={hideTransaction}
-                />
+
+                {transactions ? (
+                    <TransactionsContainer
+                        transactions={transactions}
+                        setTransaction={setTransaction}
+                        hideTransaction={hideTransaction}
+                    />
+                ) : (
+                    <div className="transaction-card">
+                        <p>No pending transactions</p>
+                    </div>
+                )}
             </div>
         </Container>
     )
