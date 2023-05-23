@@ -178,6 +178,7 @@ const Nfts = () => {
         useContext(Web3Context)
     const [openDepositNftModal, setOpenDepositNftModal] = useState(false)
     const [nfts, setNfts] = useState([])
+    const [loading, setLoading] = useState(false)
 
     const checkNftDepositEvent = async () => {
         const latestBlockNumber = await providerB.getBlockNumber()
@@ -186,19 +187,26 @@ const Nfts = () => {
             const event = args[args.length - 1]
             if (event.blockNumber <= latestBlockNumber) return
 
+            setLoading(true)
             const ownedNfts = await getNfts()
             setNfts(ownedNfts)
+            setLoading(false)
         })
     }
 
     useEffect(() => {
         if (isWeb3Enabled) {
+            setLoading(true)
             const fetchOwnedNfts = async () => {
                 await checkNftDepositEvent()
-                const ownedNfts = await getNfts()
-                setNfts(ownedNfts)
+                return await getNfts()
             }
-            fetchOwnedNfts().catch((error) => console.log(error))
+            fetchOwnedNfts()
+                .then((ownedNfts) => {
+                    setNfts(ownedNfts)
+                    setLoading(false)
+                })
+                .catch((error) => console.log(error))
         }
     }, [isWeb3Enabled])
 
@@ -225,70 +233,79 @@ const Nfts = () => {
                         Deposit NFT
                     </button>
                 </ButtonsContainer>
-                <div className="nfts-wrapper" id="nfts-wrapper">
-                    {nfts.map((nft, i) => (
-                        <div key={i} className="nft-card">
-                            <div className="nft-card-header">
-                                <p className="nft-name">{nft.collectionName}</p>
-                                <FaEthereum />
-                            </div>
-                            <div className="image-container">
-                                <BsFillArrowUpRightSquareFill className="arrow-icon hidden" />
-                                <img
-                                    className="nft-image"
-                                    src={nft.tokenUri.image}
-                                />
-                            </div>
+                {nfts ? (
+                    <div className="nfts-wrapper" id="nfts-wrapper">
+                        {nfts.map((nft, i) => (
+                            <div key={i} className="nft-card">
+                                <div className="nft-card-header">
+                                    <p className="nft-name">
+                                        {nft.collectionName}
+                                    </p>
+                                    <FaEthereum />
+                                </div>
+                                <div className="image-container">
+                                    <BsFillArrowUpRightSquareFill className="arrow-icon hidden" />
+                                    <img
+                                        className="nft-image"
+                                        src={nft.tokenUri.image}
+                                    />
+                                </div>
 
-                            <div className="nft-data">
+                                <div className="nft-data">
+                                    <p className="nft-metadata">
+                                        Name: <span>{nft.tokenUri.name}</span>
+                                    </p>
+                                    <p className="nft-metadata">
+                                        Id: <span>{nft.tokenId}</span>
+                                    </p>
+                                </div>
+
                                 <p className="nft-metadata">
-                                    Name: <span>{nft.tokenUri.name}</span>
+                                    Symbol: <span>{nft.tokenSymbol}</span>
                                 </p>
+
                                 <p className="nft-metadata">
-                                    Id: <span>{nft.tokenId}</span>
+                                    Description:{" "}
+                                    <span>{nft.tokenUri.description}</span>
                                 </p>
+
+                                <div className="nft-address-container">
+                                    <p className="nft-metadata">
+                                        Address:{" "}
+                                        <span>
+                                            {nft.nftAddress.slice(0, 5) +
+                                                "..." +
+                                                nft.nftAddress.slice(
+                                                    nft.nftAddress.length - 4
+                                                )}
+                                        </span>
+                                    </p>
+                                    <button
+                                        id={`${nft.tokenId}`}
+                                        className="copy-button"
+                                        onClick={(event) => {
+                                            navigator.clipboard.writeText(
+                                                nft.nftAddress
+                                            )
+                                            handleClick(event, nft.tokenId)
+                                        }}
+                                    >
+                                        <MdOutlineContentCopy className="icon show" />
+                                        <AiOutlineCheck className="icon hidden" />
+                                    </button>
+                                </div>
                             </div>
-
-                            <p className="nft-metadata">
-                                Symbol: <span>{nft.tokenSymbol}</span>
-                            </p>
-
-                            <p className="nft-metadata">
-                                Description:{" "}
-                                <span>{nft.tokenUri.description}</span>
-                            </p>
-
-                            <div className="nft-address-container">
-                                <p className="nft-metadata">
-                                    Address:{" "}
-                                    <span>
-                                        {nft.nftAddress.slice(0, 5) +
-                                            "..." +
-                                            nft.nftAddress.slice(
-                                                nft.nftAddress.length - 4
-                                            )}
-                                    </span>
-                                </p>
-                                <button
-                                    id={`${nft.tokenId}`}
-                                    className="copy-button"
-                                    onClick={(event) => {
-                                        navigator.clipboard.writeText(
-                                            nft.nftAddress
-                                        )
-                                        handleClick(event, nft.tokenId)
-                                    }}
-                                >
-                                    <MdOutlineContentCopy className="icon show" />
-                                    <AiOutlineCheck className="icon hidden" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                {nfts.length === 0 && (
+                        ))}
+                    </div>
+                ) : (
                     <div className="nft-card width">
                         <p>No NFT balance</p>
+                    </div>
+                )}
+
+                {loading && (
+                    <div className="nft-card width">
+                        <p>Loading...</p>
                     </div>
                 )}
             </Div>
