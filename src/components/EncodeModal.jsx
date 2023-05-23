@@ -18,7 +18,7 @@ const Container = styled.div`
     box-shadow: 0px 0px 5px 2px #d0d0d0;
     border-radius: 10px;
     background-color: #f1faee;
-    height: 550px;
+    height: 578px;
     overflow-y: scroll;
 
     &::-webkit-scrollbar {
