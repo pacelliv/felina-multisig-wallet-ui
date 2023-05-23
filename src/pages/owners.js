@@ -118,6 +118,7 @@ const Owners = () => {
     } = useContext(Context)
 
     const [owners, setOwners] = useState([])
+    const [loading, setLoading] = useState(false)
 
     const { runContractFunction: getOwners } = useWeb3Contract({
         abi: walletAbi,
@@ -129,11 +130,13 @@ const Owners = () => {
     const updateOwnersUI = async () => {
         let ownersFromContractCall
         try {
+            setLoading(true)
             ownersFromContractCall = await getOwners()
         } catch (error) {
             console.log(error)
         } finally {
             setOwners(ownersFromContractCall)
+            setLoading(false)
         }
     }
 
@@ -182,22 +185,29 @@ const Owners = () => {
                         Remove Owner
                     </button>
                 </ButtonsContainer>
-                <div className="owners-wrapper">
-                    {owners.map((owner, i) => (
-                        <div className="owner-card" key={i}>
-                            <div className="owner-jazzicon">
-                                <Jazzicon
-                                    diameter={35}
-                                    seed={jsNumberForAddress(owner)}
-                                />
+                {owners && (
+                    <div className="owners-wrapper">
+                        {owners.map((owner, i) => (
+                            <div className="owner-card" key={i}>
+                                <div className="owner-jazzicon">
+                                    <Jazzicon
+                                        diameter={35}
+                                        seed={jsNumberForAddress(owner)}
+                                    />
+                                </div>
+                                <div className="owner">
+                                    <p className="owner-title">Owner ID: {i}</p>
+                                    <p className="owner-address">{owner}</p>
+                                </div>
                             </div>
-                            <div className="owner">
-                                <p className="owner-title">Owner ID: {i}</p>
-                                <p className="owner-address">{owner}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
+                {loading && (
+                    <div className="owner-card">
+                        <p>Loading...</p>
+                    </div>
+                )}
             </Div>
         </Container>
     )
