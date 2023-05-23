@@ -8,6 +8,7 @@ import { FaEthereum } from "react-icons/fa"
 import { AiOutlineCheck } from "react-icons/ai"
 import { MdOutlineContentCopy } from "react-icons/md"
 import { getNfts } from "@/utils/api"
+import { Context } from "@/context/Context"
 
 const Container = styled.div`
     span {
@@ -172,21 +173,11 @@ const ButtonsContainer = styled.div`
 `
 
 const Nfts = () => {
+    const { handleClick } = useContext(Context)
     const { isWeb3Enabled, multiSigWalletB, providerB } =
         useContext(Web3Context)
     const [openDepositNftModal, setOpenDepositNftModal] = useState(false)
     const [nfts, setNfts] = useState([])
-
-    const handleClick = (e, id) => {
-        if (e.target.id === id) {
-            e.target.children[0].className.baseVal = "icon hidden"
-            e.target.children[1].className.baseVal = "icon show"
-            setTimeout(() => {
-                e.target.children[0].className.baseVal = "icon show"
-                e.target.children[1].className.baseVal = "icon hidden"
-            }, 1000)
-        }
-    }
 
     const checkNftDepositEvent = async () => {
         const latestBlockNumber = await providerB.getBlockNumber()

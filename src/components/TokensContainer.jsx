@@ -2,6 +2,8 @@ import styled from "styled-components"
 import { AiOutlineCheck } from "react-icons/ai"
 import { MdOutlineContentCopy } from "react-icons/md"
 import { ethers } from "ethers"
+import { useContext } from "react"
+import { Context } from "@/context/Context"
 
 const Div = styled.div`
     display: grid;
@@ -93,6 +95,7 @@ const TokensContainer = ({
     loading,
     network,
 }) => {
+    const { handleClick } = useContext(Context)
     const index = (id) => marketData.findIndex((data) => data.id === id)
 
     const usdConversion = (id, balance, decimals) => {
@@ -101,17 +104,6 @@ const TokensContainer = ({
             parseInt(formattedBalance) * marketData[index(id)].current_price
         const roundedMul = (Math.round(mul * 100) / 100).toFixed(2)
         return Number(roundedMul).toLocaleString("en")
-    }
-
-    const handleClick = (e, id) => {
-        if (e.target.id === id) {
-            e.target.children[0].className.baseVal = "icon hidden"
-            e.target.children[1].className.baseVal = "icon show"
-            setTimeout(() => {
-                e.target.children[0].className.baseVal = "icon show"
-                e.target.children[1].className.baseVal = "icon hidden"
-            }, 1000)
-        }
     }
 
     return (
