@@ -109,9 +109,6 @@ const Home = () => {
         description: "",
     })
 
-    const toggleTransactionModal = () =>
-        setOpenTransactionModal(!openTransactionModal)
-
     const hideTransaction = async (e, sender, txId) => {
         e.stopPropagation()
         if (sender.toLowerCase() === account) {
@@ -217,7 +214,8 @@ const Home = () => {
                     sender={transaction.sender}
                     hash={transaction.hash}
                     description={transaction.description}
-                    toggleTransactionModal={toggleTransactionModal}
+                    openTransactionModal={openTransactionModal}
+                    setOpenTransactionModal={setOpenTransactionModal}
                 />
             )}
             <div
@@ -257,7 +255,8 @@ const Home = () => {
                         transactions={transactions}
                         setTransaction={setTransaction}
                         hideTransaction={hideTransaction}
-                        toggleTransactionModal={toggleTransactionModal}
+                        openTransactionModal={openTransactionModal}
+                        setOpenTransactionModal={setOpenTransactionModal}
                     />
                 ) : (
                     <div className="transaction-card">

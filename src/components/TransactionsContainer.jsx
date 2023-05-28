@@ -91,7 +91,8 @@ const TransactionsContainer = ({
     transactions,
     setTransaction,
     hideTransaction,
-    toggleTransactionModal,
+    openTransactionModal,
+    setOpenTransactionModal,
 }) => {
     return (
         <TransactionsWrapper id="transactions-wrapper">
@@ -124,7 +125,7 @@ const TransactionsContainer = ({
                                     hash,
                                     description,
                                 })
-                                toggleTransactionModal()
+                                setOpenTransactionModal(!openTransactionModal)
                             }}
                         >
                             <BsFillArrowUpRightSquareFill className="arrow-icon" />

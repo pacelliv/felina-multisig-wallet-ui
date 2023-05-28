@@ -164,7 +164,8 @@ const TransactionModal = ({
     sender,
     hash,
     description,
-    toggleTransactionModal,
+    openTransactionModal,
+    setOpenTransactionModal,
 }) => {
     const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
@@ -271,7 +272,7 @@ const TransactionModal = ({
         >
             <FaTimes
                 className="close-modal-icon"
-                onClick={toggleTransactionModal}
+                onClick={() => setOpenTransactionModal(!openTransactionModal)}
             />
             <h1 className="modal-title">Transaction #{index}</h1>
             <h3 className="modal-subtitle">Transaction details:</h3>
