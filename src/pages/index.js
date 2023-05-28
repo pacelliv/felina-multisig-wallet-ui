@@ -4,7 +4,6 @@ import CreateTransactionModal from "@/components/CreateTransactionModal"
 import TransactionModal from "@/components/TransactionModal"
 import styled from "styled-components"
 import { useContext, useEffect, useState } from "react"
-import { Context } from "@/context/Context"
 import { Web3Context } from "@/context/Web3Context"
 import { ethers } from "ethers"
 import {
@@ -87,18 +86,15 @@ const ButtonsContainer = styled.div`
 
 const Home = () => {
     const {
-        openModal,
-        toggleModal,
-        openCreateTransactionModal,
-        toggleCreateTransactionModal,
-    } = useContext(Context)
-    const {
         isWeb3Enabled,
         account,
         providerA,
         multiSigWalletA,
         contractAddress,
     } = useContext(Web3Context)
+    const [openModal, setOpenModal] = useState(false)
+    const [openCreateTransactionModal, setOpenCreateTransactionModal] =
+        useState(false)
     const [loading, setLoading] = useState(false)
     const [openTransactionModal, setOpenTransactionModal] = useState(false)
     const [transactions, setTransactions] = useState([])
@@ -198,11 +194,17 @@ const Home = () => {
         <Container>
             <Meta title={"Multisig Wallet | Transactions"} />
             {openModal && (
-                <EncodeModal openModal={openModal} toggleModal={toggleModal} />
+                <EncodeModal
+                    openModal={openModal}
+                    setOpenModal={setOpenModal}
+                />
             )}
             {openCreateTransactionModal && (
                 <CreateTransactionModal
-                    toggleCreateTransactionModal={toggleCreateTransactionModal}
+                    openCreateTransactionModal={openCreateTransactionModal}
+                    setOpenCreateTransactionModal={
+                        setOpenCreateTransactionModal
+                    }
                 />
             )}
             {openTransactionModal && (
@@ -231,14 +233,18 @@ const Home = () => {
                 <Title>Pending transactions:</Title>
                 <ButtonsContainer>
                     <button
-                        onClick={toggleCreateTransactionModal}
+                        onClick={() =>
+                            setOpenCreateTransactionModal(
+                                !openCreateTransactionModal
+                            )
+                        }
                         className="button orange"
                         disabled={openModal}
                     >
                         Create transaction
                     </button>
                     <button
-                        onClick={toggleModal}
+                        onClick={() => setOpenModal(!openModal)}
                         className="button green"
                         disabled={openModal}
                     >
