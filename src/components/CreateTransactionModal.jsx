@@ -166,7 +166,10 @@ const Container = styled.div`
     }
 `
 
-const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
+const CreateTransactionModal = ({
+    openCreateTransactionModal,
+    setOpenCreateTransactionModal,
+}) => {
     const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
     const [formData, setFormData] = useState({
@@ -235,7 +238,9 @@ const CreateTransactionModal = ({ toggleCreateTransactionModal }) => {
         >
             <FaTimes
                 className="close-modal-icon"
-                onClick={toggleCreateTransactionModal}
+                onClick={() =>
+                    setOpenCreateTransactionModal(!openCreateTransactionModal)
+                }
             />
             <h1 className="modal-title">Propose a transaction</h1>
             <p className="modal-instructions">

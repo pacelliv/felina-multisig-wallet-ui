@@ -158,7 +158,7 @@ const Container = styled.div`
     }
 `
 
-const EncodeModal = ({ openModal, toggleModal }) => {
+const EncodeModal = ({ openModal, setOpenModal }) => {
     const [enterMouse, setEnterMouse] = useState(false)
     const [copy, setCopy] = useState(false)
     const [formData, setFormData] = useState({
@@ -192,7 +192,10 @@ const EncodeModal = ({ openModal, toggleModal }) => {
             onMouseLeave={() => setEnterMouse(false)}
             enterMouse={enterMouse}
         >
-            <FaTimes className="close-modal-icon" onClick={toggleModal} />
+            <FaTimes
+                className="close-modal-icon"
+                onClick={() => setOpenModal(!openModal)}
+            />
             <h1 className="modal-title">Encode calldata</h1>
             <p className="modal-instructions">
                 The data is encoded with etherjs{" "}
