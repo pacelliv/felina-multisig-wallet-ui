@@ -2,8 +2,7 @@ import styled from "styled-components"
 import { AiOutlineCheck } from "react-icons/ai"
 import { MdOutlineContentCopy } from "react-icons/md"
 import { ethers } from "ethers"
-import { useContext } from "react"
-import { Context } from "@/context/Context"
+import { handleClick } from "@/utils/utilities"
 
 const Div = styled.div`
     display: grid;
@@ -95,7 +94,6 @@ const TokensContainer = ({
     loading,
     network,
 }) => {
-    const { handleClick } = useContext(Context)
     const index = (id) => marketData.findIndex((data) => data.id === id)
 
     const usdConversion = (id, balance, decimals) => {

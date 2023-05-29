@@ -8,7 +8,7 @@ import { FaEthereum } from "react-icons/fa"
 import { AiOutlineCheck } from "react-icons/ai"
 import { MdOutlineContentCopy } from "react-icons/md"
 import { getNfts } from "@/utils/api"
-import { Context } from "@/context/Context"
+import { handleClick } from "@/utils/utilities"
 
 const Container = styled.div`
     span {
@@ -173,7 +173,6 @@ const ButtonsContainer = styled.div`
 `
 
 const Nfts = () => {
-    const { handleClick } = useContext(Context)
     const { isWeb3Enabled, multiSigWalletB, providerB } =
         useContext(Web3Context)
     const [openDepositNftModal, setOpenDepositNftModal] = useState(false)
