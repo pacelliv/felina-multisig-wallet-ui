@@ -1,4 +1,4 @@
-import { createContext } from "react"
+import { createContext, useState, useEffect } from "react"
 import { useMoralis } from "react-moralis"
 import { walletContractAddresses, walletAbi } from "@/constants"
 import { ethers } from "ethers"
@@ -19,6 +19,8 @@ const Web3ContextProvider = ({ children }) => {
     const chainId = parseInt(chainIdHex)
 
     const network = chainId === 31337 ? "localhost" : "sepolia"
+
+    const [windowWidth, setWindowWidth] = useState(0)
 
     const contractAddress =
         chainId in walletContractAddresses
@@ -82,6 +84,19 @@ const Web3ContextProvider = ({ children }) => {
         walletC
     )
 
+    useEffect(() => {
+        function handleResize() {
+            setWindowWidth(window.innerWidth)
+        }
+
+        handleResize()
+        window.addEventListener("resize", handleResize)
+
+        return function () {
+            window.removeEventListener("resize", handleResize)
+        }
+    }, [])
+
     return (
         <Web3Context.Provider
             value={{
@@ -104,6 +119,7 @@ const Web3ContextProvider = ({ children }) => {
                 multiSigWalletA,
                 multiSigWalletB,
                 multiSigWalletC,
+                windowWidth,
             }}
         >
             {children}
