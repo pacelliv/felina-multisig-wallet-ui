@@ -2,8 +2,6 @@ import styled from "styled-components"
 import ConnectButton from "./ConnectButton"
 import Link from "next/link"
 import { FiMenu } from "react-icons/fi"
-import { Context } from "../context/Context"
-import { useContext } from "react"
 
 const Nav = styled.nav`
     padding: 1.67em 2em;
@@ -15,7 +13,6 @@ const Nav = styled.nav`
         display: none;
         font-size: 30px;
         cursor: pointer;
-        pointer-events: ${({ openModal }) => openModal && "none"};
     }
 
     .navbar-title {
@@ -60,10 +57,8 @@ const Nav = styled.nav`
 `
 
 const Navbar = ({ toggleSidebar }) => {
-    const { openModal } = useContext(Context)
-
     return (
-        <Nav openModal={openModal}>
+        <Nav>
             <FiMenu className="hamburger" onClick={toggleSidebar} />
             <Link href="/" className="navbar-title">
                 Felina Wallet &#169;
