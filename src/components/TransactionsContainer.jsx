@@ -148,7 +148,7 @@ const TransactionsContainer = ({
                                 <p className="transaction-sender">
                                     Proposer:{" "}
                                     <span className="value">
-                                        {sender.slice(0, 5) +
+                                        {sender.slice(0, 6) +
                                             "..." +
                                             sender.slice(
                                                 sender.length - 4
