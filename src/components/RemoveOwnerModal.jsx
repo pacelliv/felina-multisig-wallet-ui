@@ -150,7 +150,10 @@ const Container = styled.div`
     }
 `
 
-const RemoveOwnerModal = ({ toggleRemoveOwnerModal }) => {
+const RemoveOwnerModal = ({
+    openRemoveOwnerModal,
+    setOpenRemoveOwnerModal,
+}) => {
     const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
     const [formData, setFormData] = useState({ id: "", description: "" })
@@ -222,7 +225,7 @@ const RemoveOwnerModal = ({ toggleRemoveOwnerModal }) => {
         >
             <FaTimes
                 className="close-modal-icon"
-                onClick={toggleRemoveOwnerModal}
+                onClick={() => setOpenRemoveOwnerModal(!openRemoveOwnerModal)}
             />
             <h1 className="modal-title">Remove owner</h1>
             <p className="modal-instructions">

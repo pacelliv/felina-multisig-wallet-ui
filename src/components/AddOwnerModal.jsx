@@ -150,7 +150,7 @@ const Container = styled.div`
     }
 `
 
-const AddOwnerModal = ({ toggleAddOwnerModal }) => {
+const AddOwnerModal = ({ openAddOwnerModal, setOpenAddOwnerModal }) => {
     const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
     const [formData, setFormData] = useState({ owner: "", description: "" })
@@ -222,7 +222,7 @@ const AddOwnerModal = ({ toggleAddOwnerModal }) => {
         >
             <FaTimes
                 className="close-modal-icon"
-                onClick={toggleAddOwnerModal}
+                onClick={() => setOpenAddOwnerModal(!openAddOwnerModal)}
             />
             <h1 className="modal-title">Add owner</h1>
             <p className="modal-instructions">

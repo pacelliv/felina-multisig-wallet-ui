@@ -4,7 +4,6 @@ import { useState, useContext, useEffect } from "react"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { useWeb3Contract } from "react-moralis"
 import { Web3Context } from "@/context/Web3Context"
-import { Context } from "@/context/Context"
 import styled from "styled-components"
 import RemoveOwnerModal from "../components/RemoveOwnerModal"
 import AddOwnerModal from "../components/AddOwnerModal"
@@ -110,12 +109,8 @@ const ButtonsContainer = styled.div`
 
 const Owners = () => {
     const { contractAddress, isWeb3Enabled } = useContext(Web3Context)
-    const {
-        openRemoveOwnerModal,
-        toggleRemoveOwnerModal,
-        openAddOwnerModal,
-        toggleAddOwnerModal,
-    } = useContext(Context)
+    const [openRemoveOwnerModal, setOpenRemoveOwnerModal] = useState(false)
+    const [openAddOwnerModal, setOpenAddOwnerModal] = useState(false)
 
     const [owners, setOwners] = useState([])
     const [loading, setLoading] = useState(false)
@@ -154,11 +149,15 @@ const Owners = () => {
             <Meta title={"Multisig Wallet | Owners"} />
             {openRemoveOwnerModal && (
                 <RemoveOwnerModal
-                    toggleRemoveOwnerModal={toggleRemoveOwnerModal}
+                    openRemoveOwnerModal={openRemoveOwnerModal}
+                    setOpenRemoveOwnerModal={setOpenRemoveOwnerModal}
                 />
             )}
             {openAddOwnerModal && (
-                <AddOwnerModal toggleAddOwnerModal={toggleAddOwnerModal} />
+                <AddOwnerModal
+                    openAddOwnerModal={openAddOwnerModal}
+                    setOpenAddOwnerModal={setOpenAddOwnerModal}
+                />
             )}
             <div
                 className={
@@ -171,14 +170,16 @@ const Owners = () => {
                 <Title>Current list of owners:</Title>
                 <ButtonsContainer>
                     <button
-                        onClick={toggleAddOwnerModal}
+                        onClick={() => setOpenAddOwnerModal(!openAddOwnerModal)}
                         className="button celurean"
                         disabled={openRemoveOwnerModal || openAddOwnerModal}
                     >
                         Add owner
                     </button>
                     <button
-                        onClick={toggleRemoveOwnerModal}
+                        onClick={() =>
+                            setOpenRemoveOwnerModal(!openRemoveOwnerModal)
+                        }
                         className="button purple"
                         disabled={openRemoveOwnerModal || openAddOwnerModal}
                     >
