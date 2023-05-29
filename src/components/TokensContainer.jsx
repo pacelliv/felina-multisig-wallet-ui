@@ -168,7 +168,7 @@ const TokensContainer = ({
                                         {parseInt(
                                             ethers.utils.formatUnits(
                                                 tokensBalances[i],
-                                                decimal_place
+                                                "7"
                                             )
                                         ).toLocaleString("en")}{" "}
                                         {symbol.toUpperCase()}
