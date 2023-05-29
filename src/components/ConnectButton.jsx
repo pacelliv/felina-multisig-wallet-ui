@@ -1,6 +1,5 @@
 import styled from "styled-components"
 import { Web3Context } from "../context/Web3Context"
-import { Context } from "@/context/Context"
 import { useContext, useEffect } from "react"
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { FaWallet } from "react-icons/fa"
@@ -36,9 +35,8 @@ const ConnectButton = () => {
         account,
         Moralis,
         deactivateWeb3,
+        windowWith,
     } = useContext(Web3Context)
-
-    const { windowWith } = useContext(Context)
 
     const connectWallet = async () => {
         const wallet = await enableWeb3()

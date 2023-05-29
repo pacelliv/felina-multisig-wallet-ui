@@ -2,7 +2,6 @@ import { useWeb3Contract } from "react-moralis"
 import { walletAbi } from "@/constants"
 import { useContext, useState, useEffect } from "react"
 import { Web3Context } from "../context/Web3Context"
-import { Context } from "@/context/Context"
 import { ethers } from "ethers"
 import { MdOutlineContentCopy } from "react-icons/md"
 import { AiOutlineCheck } from "react-icons/ai"
@@ -81,9 +80,13 @@ const Div = styled.div`
 `
 
 const Status = () => {
-    const { isWeb3Enabled, contractAddress, providerC, multiSigWalletC } =
-        useContext(Web3Context)
-    const { windowWidth } = useContext(Context)
+    const {
+        isWeb3Enabled,
+        contractAddress,
+        providerC,
+        multiSigWalletC,
+        windowWidth,
+    } = useContext(Web3Context)
     const [walletBalance, setWalletBalance] = useState(0)
     const [copy, setCopy] = useState(false)
     const [ethPrice, setEthPrice] = useState(0)
