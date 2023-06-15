@@ -10,21 +10,21 @@ import { addTransactionDescription } from "@/utils/api"
 const Container = styled.div`
     position: fixed;
     max-width: 530px;
-    padding: 1.5em;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 99;
     margin: auto;
-    box-shadow: 0px 0px 5px 2px #d0d0d0;
+    box-shadow: 0px 0px 5px 4px #363636;
     border-radius: 10px;
-    background-color: #f1faee;
+    background-color: #212121;
     height: 578px;
     overflow-y: auto;
+    color: rgb(210, 210, 210);
 
     &::-webkit-scrollbar {
-        width: 7px;
+        width: 0px;
     }
 
     &::-webkit-scrollbar-track {
@@ -35,7 +35,16 @@ const Container = styled.div`
 
     &::-webkit-scrollbar-thumb {
         background-color: ${({ enterMouse }) => enterMouse && "#d1d1d1"};
+        background-color: transparent;
         border-radius: 10px;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2em 1.5em 0;
+        margin-bottom: 2em;
     }
 
     .close-modal-icon {
@@ -44,15 +53,15 @@ const Container = styled.div`
         padding: 0.2em;
         margin: 0 0 0 auto;
         display: block;
+        transform: translateX(0.2em);
     }
 
     .close-modal-icon:hover {
         opacity: 0.7;
     }
 
-    .modal-title {
-        margin: 0 0 0.6em 0;
-        font-size: 1.75rem;
+    .modal-content {
+        padding: 0 2em;
     }
 
     .modal-instructions {
@@ -60,14 +69,16 @@ const Container = styled.div`
     }
 
     .code {
-        background: white;
+        background: #141414;
         padding: 0.2em 0.4em;
         font-weight: 600;
         border-radius: 5px;
+        color: whitesmoke;
     }
 
     .form {
         margin-top: 1em;
+        padding: 0 1.5em;
     }
 
     label {
@@ -93,10 +104,12 @@ const Container = styled.div`
         width: 100%;
         margin-top: 0.5em;
         text-indent: 6px;
-        padding: 0.7em 0.5em;
+        padding: 0.8em;
         border-radius: 5px;
-        border: 1px solid #b1b1b1;
+        border: none;
         font-family: inherit;
+        color: whitesmoke;
+        background-color: #272d36;
     }
 
     .icon {
@@ -107,7 +120,7 @@ const Container = styled.div`
 
     textarea {
         display: block;
-        border: 1px solid #b1b1b1;
+        border: none;
         width: 100%;
         height: 100px;
         border-radius: 5px;
@@ -117,52 +130,39 @@ const Container = styled.div`
         letter-spacing: 0.2px;
         line-height: 1.4;
         resize: none;
+        color: whitesmoke;
+        background-color: #272d36;
+    }
+
+    .modal-bottom {
+        background-color: #272d36;
+        display: flex;
+        justify-content: end;
+        gap: 10px;
+        margin-top: 2em;
+        padding: 0.7em 1.5em;
     }
 
     .submit-button {
-        padding: 0.9em 1em;
-        margin-top: 1.7em;
-        width: 100%;
-        border-radius: 5px;
         border: none;
         font-family: inherit;
-        font-size: 1.05rem;
-        font-weight: 600;
-        background-color: #457b9d;
-        color: #ffead0;
-        letter-spacing: 0.3px;
-        transition: all 0.4s ease;
+        font-size: 0.95rem;
+        color: white;
+        letter-spacing: 0.2px;
+        border-radius: 5px;
+        display: block;
+        background-color: transparent;
+        padding: 0.5em 1.5em;
+        cursor: pointer;
     }
 
     .submit-button:disabled {
-        cursor: default;
-    }
-
-    .submit-button:hover:not([disabled]) {
-        background-color: #005f73;
+        cursor: not-allowed;
+        opacity: 0.5;
     }
 
     @media (max-width: 550px) {
         margin: auto 0.8em;
-    }
-
-    @media (max-width: 492px) {
-        overflow-y: scroll;
-
-        &::-webkit-scrollbar {
-            width: 7px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: transparent;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background-color: ${({ enterMouse }) => enterMouse && "#d1d1d1"};
-            border-radius: 10px;
-        }
     }
 `
 
@@ -201,15 +201,15 @@ const CreateTransactionModal = ({
         params: {},
     })
 
-    const handleChange = (e) => {
-        const { name, value } = e.target
+    const handleChange = (event) => {
+        const { name, value } = event.target
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value,
         }))
     }
 
-    const handleSubmit = async (event) => {
+    const handleClick = async (event) => {
         event.preventDefault()
         const transactionsList = await getTransactions()
         await addTransactionDescription(
@@ -236,24 +236,33 @@ const CreateTransactionModal = ({
             onMouseLeave={() => setEnterMouse(false)}
             enterMouse={enterMouse}
         >
-            <FaTimes
-                className="close-modal-icon"
-                onClick={() =>
-                    setOpenCreateTransactionModal(!openCreateTransactionModal)
-                }
-            />
-            <h1 className="modal-title">Propose a transaction</h1>
-            <p className="modal-instructions">
-                Fill the fields according to the examples and hit the submit
-                button to add a new transaction to the list of pending
-                transactions.
-            </p>
-            <p className="modal-instructions margin-top">
-                Leave the data field empty if you intent on submitting a simple
-                transaction to transfer ETH, otherwise insert the encoded data
-                to submit a transaction to call a function in a contract.
-            </p>
-            <form className="form" onSubmit={handleSubmit}>
+            <div className="modal-header">
+                <h2 className="modal-title">Create a transaction</h2>
+                <FaTimes
+                    className="close-modal-icon"
+                    onClick={() =>
+                        setOpenCreateTransactionModal(
+                            !openCreateTransactionModal
+                        )
+                    }
+                />
+            </div>
+
+            <div className="modal-content">
+                <p className="modal-instructions">
+                    Fill the fields according to the examples and hit the submit
+                    button to add a new transaction to the list of pending
+                    transactions.
+                </p>
+                <p className="modal-instructions margin-top">
+                    Leave the data field empty if you intent on submitting a
+                    simple transaction to transfer ETH, otherwise insert the
+                    encoded data to submit a transaction to call a function in a
+                    contract.
+                </p>
+            </div>
+
+            <form className="form" id="create-form">
                 <label htmlFor="to" className="label">
                     To:
                 </label>
@@ -313,13 +322,29 @@ const CreateTransactionModal = ({
                     value={formData.description}
                     required
                 />
+            </form>
+            <div className="modal-bottom">
+                <button
+                    onClick={() =>
+                        setOpenCreateTransactionModal(
+                            !openCreateTransactionModal
+                        )
+                    }
+                    className="submit-button"
+                    style={{ backgroundColor: "#3e3e3e" }}
+                >
+                    Cancel
+                </button>
                 <button
                     disabled={isFetching || isLoading}
+                    onClick={handleClick}
+                    form="create-form"
                     className="submit-button"
+                    style={{ backgroundColor: "#1db954" }}
                 >
-                    Submit Transaction
+                    Create Tx{" "}
                 </button>
-            </form>
+            </div>
         </Container>
     )
 }

@@ -8,18 +8,18 @@ import { Web3Context } from "@/context/Web3Context"
 const Container = styled.div`
     position: fixed;
     max-width: 530px;
-    padding: 1.5em;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 99;
     margin: auto;
-    box-shadow: 0px 0px 5px 2px #d0d0d0;
+    box-shadow: 0px 0px 5px 4px #363636;
     border-radius: 10px;
-    background-color: #f1faee;
+    background-color: #212121;
     height: 578px;
     overflow-y: auto;
+    color: rgb(210, 210, 210);
 
     span {
         font-weight: 500;
@@ -27,7 +27,7 @@ const Container = styled.div`
     }
 
     &::-webkit-scrollbar {
-        width: 7px;
+        width: 0px;
     }
 
     &::-webkit-scrollbar-track {
@@ -38,7 +38,18 @@ const Container = styled.div`
 
     &::-webkit-scrollbar-thumb {
         background-color: ${({ enterMouse }) => enterMouse && "#d1d1d1"};
+        background-color: transparent;
         border-radius: 10px;
+    }
+
+    .modal-header {
+        padding: 2em 1.5em 0;
+    }
+
+    .modal-header-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .close-modal-icon {
@@ -47,6 +58,7 @@ const Container = styled.div`
         padding: 0.2em;
         margin: 0 0 0 auto;
         display: block;
+        transform: translateX(0.2em);
     }
 
     .close-modal-icon:hover {
@@ -54,22 +66,25 @@ const Container = styled.div`
     }
 
     .modal-title {
-        margin: 0 0 0.8em 0;
-        font-size: 1.75rem;
         text-decoration: underline;
     }
 
+    .modal-content {
+        padding: 0 2em;
+    }
+
     .modal-subtitle {
-        margin: 0 0 0.3em 0;
+        margin: 1.2em 0 0.3em 0;
         font-size: 1.2rem;
         font-weight: 600;
     }
 
     .modal-details-container {
         border-radius: 10px;
+        margin: 0 1.5em;
         padding: 1em;
-        background-color: white;
-        color: #3d3d3d;
+        background-color: #272d36;
+        color: rgb(210, 210, 210);
     }
 
     .modal-detail {
@@ -86,72 +101,40 @@ const Container = styled.div`
         font-size: 1rem;
     }
 
-    .buttons-container {
-        margin: 0.8em 0 0;
+    .modal-bottom {
+        background-color: #272d36;
         display: flex;
-        flex-direction: row;
-        gap: 15px;
+        justify-content: end;
+        gap: 10px;
+        margin-top: 2em;
+        padding: 0.7em 1.5em;
+    }
 
-        .button {
-            padding: 0.5em 1em;
-            border-radius: 5px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #ffead0;
-            transition: 200ms all cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    .submit-button {
+        border: none;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: white;
+        letter-spacing: 0.2px;
+        border-radius: 5px;
+        display: block;
+        background-color: transparent;
+        padding: 0.5em 1.2em;
+        cursor: pointer;
+        transition: 200ms all cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        .button:disabled {
-            cursor: default;
-        }
+    .submit-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 
-        .blue {
-            background-color: #457b9d;
-        }
-
-        .blue:hover:not([disabled]) {
-            background-color: #005f73;
-        }
-
-        .green {
-            background-color: #115e59;
-        }
-
-        .green:hover:not([disabled]) {
-            background-color: #0f3b38;
-        }
-
-        .red {
-            background-color: #d54b4b;
-        }
-
-        .red:hover:not([disabled]) {
-            background-color: #ba2e2e;
-        }
+    .submit-button:hover {
+        background-color: #3e3e3e;
     }
 
     @media (max-width: 550px) {
         margin: auto 0.8em;
-    }
-
-    @media (max-width: 492px) {
-        overflow-y: scroll;
-
-        &::-webkit-scrollbar {
-            width: 7px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: transparent;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background-color: ${({ enterMouse }) => enterMouse && "#d1d1d1"};
-            border-radius: 10px;
-        }
     }
 `
 
@@ -270,12 +253,19 @@ const TransactionModal = ({
             onMouseLeave={() => setEnterMouse(false)}
             enterMouse={enterMouse}
         >
-            <FaTimes
-                className="close-modal-icon"
-                onClick={() => setOpenTransactionModal(!openTransactionModal)}
-            />
-            <h1 className="modal-title">Transaction #{index}</h1>
-            <h3 className="modal-subtitle">Transaction details:</h3>
+            <div className="modal-header">
+                <div className="modal-header-top">
+                    <h2 className="modal-title">Transaction #{index}</h2>
+                    <FaTimes
+                        className="close-modal-icon"
+                        onClick={() =>
+                            setOpenTransactionModal(!openTransactionModal)
+                        }
+                    />
+                </div>
+                <h3 className="modal-subtitle">Transaction details:</h3>
+            </div>
+
             <div className="modal-details-container">
                 <p className="modal-detail">
                     <span>Type:</span>{" "}
@@ -314,38 +304,42 @@ const TransactionModal = ({
                     <code className="code">{approvalCount}/2</code>
                 </p>
             </div>
-            <div className="buttons-container">
+
+            <div className="modal-bottom">
                 <button
                     id="approve-button"
                     onClick={(event) => handleClick(event)}
-                    className="button blue"
+                    className="submit-button"
                     disabled={
                         approvalCount === "2" ||
                         approveLoading ||
                         approveFetching
                     }
+                    style={{ backgroundColor: "#3e3e3e" }}
                 >
                     Approve
                 </button>
                 <button
                     id="revoke-button"
                     onClick={(event) => handleClick(event)}
-                    className="button red"
+                    className="submit-button"
                     disabled={
                         approvalCount === "0" || revokeLoading || revokeFetching
                     }
+                    style={{ backgroundColor: "#3e3e3e" }}
                 >
                     Revoke
                 </button>
                 <button
                     id="execute-button"
                     onClick={(event) => handleClick(event)}
-                    className="button green"
+                    className="submit-button"
                     disabled={
                         approvalCount != "2" ||
                         executeLoading ||
                         executeFetching
                     }
+                    style={{ backgroundColor: "#1db954" }}
                 >
                     Execute
                 </button>

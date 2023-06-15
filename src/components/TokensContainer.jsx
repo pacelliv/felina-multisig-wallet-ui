@@ -16,20 +16,29 @@ const Div = styled.div`
         margin: 0.4em 0;
         border-radius: 10px;
         padding: 1.2em 1em 1.2em 1em;
-        background-color: #ffead0;
-        color: #4d4d4d;
+        color: #e4e4e4;
         transition: all 0.4s ease;
+        background: linear-gradient(
+            to left bottom,
+            rgba(99, 99, 125, 0.7),
+            rgba(99, 99, 125, 0.3)
+        );
+        backdrop-filter: blur(1rem);
     }
 
     .token-card:hover {
-        background-color: #ffe0b9;
+        background: linear-gradient(
+            to left bottom,
+            rgba(85, 85, 110, 0.7),
+            rgba(85, 85, 110, 0.3)
+        );
     }
 
     .token-icon {
         height: 50px;
         width: 50px;
         border-radius: 50%;
-        background-color: #f7f7f7;
+        background-color: transparent;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -56,6 +65,7 @@ const Div = styled.div`
     .icon {
         font-size: 16px;
         pointer-events: none;
+        color: #e4e4e4;
     }
 
     .show {

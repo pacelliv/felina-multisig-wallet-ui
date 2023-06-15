@@ -21,8 +21,8 @@ const Div = styled.div`
         gap: 7px;
         font-weight: 500;
         padding: 0.5em 1em;
-        color: #4d4d4d;
-        background-color: #ffead0;
+        color: #c1c1c1;
+        background-color: #121212;
         border-radius: 5px;
     }
 
@@ -35,7 +35,7 @@ const Div = styled.div`
         top: -40px;
         left: -30px;
         text-decoration: none;
-        color: #ffead0;
+        color: white;
         background-color: #161616;
         padding: 0.5em;
         font-size: 0.8rem;
@@ -71,9 +71,10 @@ const Div = styled.div`
 
     .icon {
         font-size: 16px;
+        color: #c1c1c1;
     }
 
-    @media (max-width: 450px) {
+    @media (max-width: 589px) {
         flex-direction: column;
         gap: 7px;
     }
@@ -156,7 +157,10 @@ const Status = () => {
             <div className="data-container">
                 <FaAddressCard className="icon" />
                 <p>
-                    {windowWidth > 580 || windowWidth < 450 ? "Wallet:" : ""}{" "}
+                    {(windowWidth > 450 && windowWidth < 590) ||
+                    windowWidth > 710
+                        ? "Wallet:"
+                        : ""}{" "}
                     {contractAddress.slice(0, 6)}...
                     {contractAddress.slice(contractAddress.length - 4)}
                 </p>
@@ -184,7 +188,10 @@ const Status = () => {
             <div className="data-container">
                 <FaEthereum className="icon" />
                 <p>
-                    {windowWidth > 580 || windowWidth < 450 ? "Balance:" : ""}{" "}
+                    {(windowWidth > 450 && windowWidth < 590) ||
+                    windowWidth > 710
+                        ? "Balance:"
+                        : ""}{" "}
                     {walletBalance &&
                         parseInt(
                             ethers.utils.formatEther(walletBalance)

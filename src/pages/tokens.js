@@ -1,6 +1,5 @@
 import Meta from "@/components/Meta"
 import DepositErc20Modal from "@/components/DepositErc20Modal"
-import SelectTokenModal from "@/components/SelectTokenModal"
 import styled from "styled-components"
 import { useContext, useEffect, useState } from "react"
 import { Web3Context } from "@/context/Web3Context"
@@ -14,7 +13,8 @@ const Container = styled.div`
         left: 0;
         width: 100vw;
         height: 100vh;
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(0.1rem);
         z-index: 20;
     }
 `
@@ -22,6 +22,7 @@ const Container = styled.div`
 const Title = styled.h1`
     margin-top: 1.2em;
     font-size: 1.8rem;
+    color: white;
 `
 
 const ButtonsContainer = styled.div`
@@ -31,33 +32,26 @@ const ButtonsContainer = styled.div`
     gap: 15px;
 
     .button {
-        padding: 0.5em 1em;
-        border-radius: 5px;
+        padding: 0.6em 1em;
+        border-radius: 7px;
         border: none;
         font-size: 1rem;
         font-weight: 500;
-        color: #ffead0;
+        color: white;
         transition: 200ms all cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.2px;
     }
 
     .button:disabled {
         cursor: default;
     }
 
-    .red {
-        background-color: #d54b4b;
+    .blue {
+        background-color: #0066ff;
     }
 
-    .red:hover:not([disabled]) {
-        background-color: #ba2e2e;
-    }
-
-    .green {
-        background-color: #115e59;
-    }
-
-    .green:hover:not([disabled]) {
-        background-color: #0f3b38;
+    .blue:hover:not([disabled]) {
+        background-color: #0850bb;
     }
 `
 
@@ -65,8 +59,6 @@ const Tokens = ({ marketData }) => {
     const { network, isWeb3Enabled, multiSigWalletB, providerB } =
         useContext(Web3Context)
     const [openDepositErc20Modal, setOpenDepositErc20Modal] = useState(false)
-    const [openSelectTokenModal, setOpenSelectTokenModal] = useState(false)
-    const [token, setToken] = useState({})
     const [tokens, setTokens] = useState([])
     const [tokensBalances, setTokensBalances] = useState([])
     const [loading, setLoading] = useState(false)
@@ -112,13 +104,13 @@ const Tokens = ({ marketData }) => {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled) {
-            const updateUi = async () => {
-                await updatePage()
-                await checkEvents()
-            }
-            updateUi().catch((error) => console.log(error))
+        //if (isWeb3Enabled) {
+        const updateUi = async () => {
+            await updatePage()
+            await checkEvents()
         }
+        updateUi().catch((error) => console.log(error))
+        //}
     }, [isWeb3Enabled])
 
     return (
@@ -128,34 +120,20 @@ const Tokens = ({ marketData }) => {
                 <DepositErc20Modal
                     openDepositErc20Modal={openDepositErc20Modal}
                     setOpenDepositErc20Modal={setOpenDepositErc20Modal}
-                    token={token}
-                />
-            )}
-            {openSelectTokenModal && (
-                <SelectTokenModal
-                    openSelectTokenModal={openSelectTokenModal}
-                    setOpenSelectTokenModal={setOpenSelectTokenModal}
-                    openDepositErc20Modal={openDepositErc20Modal}
-                    setOpenDepositErc20Modal={setOpenDepositErc20Modal}
-                    setToken={setToken}
                 />
             )}
             <div
-                className={
-                    openDepositErc20Modal || openSelectTokenModal
-                        ? "modal-backdrop"
-                        : ""
-                }
+                className={openDepositErc20Modal ? "modal-backdrop" : ""}
             ></div>
             <div>
                 <Title>ERC-20 balances:</Title>
                 <ButtonsContainer>
                     <button
                         onClick={() =>
-                            setOpenSelectTokenModal(!openSelectTokenModal)
+                            setOpenDepositErc20Modal(!openDepositErc20Modal)
                         }
-                        className="button red"
-                        disabled={openDepositErc20Modal || openSelectTokenModal}
+                        className="button blue"
+                        disabled={openDepositErc20Modal}
                     >
                         Deposit token
                     </button>

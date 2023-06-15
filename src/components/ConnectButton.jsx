@@ -5,9 +5,9 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon"
 import { FaWallet } from "react-icons/fa"
 
 const Button = styled.button`
-    padding: 0.6em 0.9em;
+    padding: 0.8em 1.4em;
     font-family: inherit;
-    background-color: #508fee;
+    background-color: #6610f2;
     font-weight: 500;
     border: none;
     display: flex;
@@ -15,15 +15,19 @@ const Button = styled.button`
     gap: 7px;
     font-size: 0.95rem;
     color: white;
-    border-radius: 10px;
-    transition: all 0.4s ease;
+    border-radius: 16px;
 
     &:hover:not([disabled]) {
-        background-color: #276fdc;
+        transform: scale(1.04);
     }
 
-    @media (max-width: 500px) {
-        font-size: 0.8rem;
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    @media (max-width: 870px) {
+        padding: 0.8em 1.1em;
     }
 `
 
@@ -35,7 +39,7 @@ const ConnectButton = () => {
         account,
         Moralis,
         deactivateWeb3,
-        windowWith,
+        windowWidth,
     } = useContext(Web3Context)
 
     const connectWallet = async () => {
@@ -67,17 +71,25 @@ const ConnectButton = () => {
     }, [])
 
     return (
-        <Button onClick={connectWallet} disabled={isWeb3EnableLoading}>
+        <Button
+            onClick={connectWallet}
+            disabled={isWeb3EnableLoading}
+            windowWidth={windowWidth}
+        >
             {isWeb3Enabled ? (
-                <Jazzicon diameter={20} seed={jsNumberForAddress(account)} />
+                <Jazzicon
+                    diameter={20}
+                    seed={jsNumberForAddress(account)}
+                    className="connect-button-icon"
+                />
             ) : (
-                <FaWallet />
+                <FaWallet className="connect-button-icon" />
             )}
             {isWeb3Enabled
                 ? `${account.slice(0, 5)}...${account.slice(
                       account.length - 4
                   )}`
-                : `${windowWith < 580 ? "Connect" : "Connect Wallet"}`}
+                : `${windowWidth < 580 ? "Connect" : "Connect Wallet"}`}
         </Button>
     )
 }

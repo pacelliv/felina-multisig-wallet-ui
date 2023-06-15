@@ -29,15 +29,15 @@ const TransactionsWrapper = styled.div`
         pointer-events: none;
     }
 
-    .transaction-card:hover {
-        background-color: #ffe0b9;
-    }
-
     .transaction-icon {
         height: 60px;
         width: 60px;
         border-radius: 50%;
-        background-color: #f7f7f7;
+        background: linear-gradient(
+            to left bottom,
+            rgba(250, 234, 215, 0.5),
+            rgba(250, 234, 215, 0.5)
+        );
         display: flex;
         justify-content: center;
         align-items: center;
@@ -73,10 +73,11 @@ const TransactionsWrapper = styled.div`
         font-weight: 600;
         font-size: 0.95rem;
         word-wrap: break-word;
+        letter-spacing: 0.2px;
     }
 
     .value {
-        font-weight: 500;
+        font-weight: 400;
         text-decoration: none;
     }
 

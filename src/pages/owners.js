@@ -15,7 +15,8 @@ const Container = styled.div`
         left: 0;
         width: 100vw;
         height: 100vh;
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(0.1rem);
         z-index: 20;
     }
 `
@@ -34,8 +35,13 @@ const Div = styled.div`
         margin: 0.4em 0;
         border-radius: 10px;
         padding: 1.2em 1em 1.2em 0.9em;
-        background-color: #ffead0;
-        color: #4d4d4d;
+        color: #e4e4e4;
+        background: linear-gradient(
+            to left bottom,
+            rgba(99, 99, 125, 0.7),
+            rgba(99, 99, 125, 0.3)
+        );
+        backdrop-filter: blur(1rem);
     }
 
     .owner-jazzicon {
@@ -68,6 +74,7 @@ const Div = styled.div`
 const Title = styled.h1`
     margin-top: 1.2em;
     font-size: 1.8rem;
+    color: white;
 `
 
 const ButtonsContainer = styled.div`
@@ -77,33 +84,35 @@ const ButtonsContainer = styled.div`
     gap: 15px;
 
     .button {
-        padding: 0.5em 1em;
-        border-radius: 5px;
+        padding: 0.6em 1em;
+        border-radius: 7px;
         border: none;
         font-size: 1rem;
         font-weight: 500;
-        color: #ffead0;
+        color: white;
         transition: 200ms all cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.2px;
     }
 
     .button:disabled {
         cursor: default;
     }
 
-    .celurean {
-        background-color: #4c7a93;
+    .transparent {
+        background-color: transparent;
+        border: 1px solid #474747;
     }
 
-    .celurean:hover:not([disabled]) {
-        background-color: #2d4856;
+    .transparent:hover:not([disabled]) {
+        border: 1px solid #d3d3d3;
     }
 
-    .purple {
-        background-color: #782859;
+    .blue {
+        background-color: #0066ff;
     }
 
-    .purple:hover:not([disabled]) {
-        background-color: #421832;
+    .blue:hover:not([disabled]) {
+        background-color: #0850bb;
     }
 `
 
@@ -136,12 +145,12 @@ const Owners = () => {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled) {
-            const fetchOwners = async () => {
-                await updateOwnersUI()
-            }
-            fetchOwners().catch((error) => console.log(error))
+        //if (isWeb3Enabled) {
+        const fetchOwners = async () => {
+            await updateOwnersUI()
         }
+        fetchOwners().catch((error) => console.log(error))
+        //}
     }, [isWeb3Enabled])
 
     return (
@@ -171,7 +180,7 @@ const Owners = () => {
                 <ButtonsContainer>
                     <button
                         onClick={() => setOpenAddOwnerModal(!openAddOwnerModal)}
-                        className="button celurean"
+                        className="button transparent"
                         disabled={openRemoveOwnerModal || openAddOwnerModal}
                     >
                         Add owner
@@ -180,7 +189,7 @@ const Owners = () => {
                         onClick={() =>
                             setOpenRemoveOwnerModal(!openRemoveOwnerModal)
                         }
-                        className="button purple"
+                        className="button blue"
                         disabled={openRemoveOwnerModal || openAddOwnerModal}
                     >
                         Remove Owner

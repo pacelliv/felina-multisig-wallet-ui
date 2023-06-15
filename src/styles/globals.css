@@ -15,8 +15,9 @@ body {
 }
 
 body {
-    background-color: #fefae0;
+    background-color: #121212;
     font-family: "Inter", sans-serif;
+    height: 100vh;
 }
 
 a {

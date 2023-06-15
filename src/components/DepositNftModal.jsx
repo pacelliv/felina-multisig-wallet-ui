@@ -9,21 +9,29 @@ import { addNftDetail } from "@/utils/api"
 const Container = styled.div`
     position: fixed;
     max-width: 530px;
-    padding: 1.5em;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 99;
     margin: auto;
-    box-shadow: 0px 0px 5px 2px #d0d0d0;
+    box-shadow: 0px 0px 5px 4px #363636;
     border-radius: 10px;
-    background-color: #f1faee;
-    height: 500px;
+    background-color: #212121;
+    height: max-content;
+    color: rgb(210, 210, 210);
 
     span {
         font-weight: 500;
         text-decoration: none;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2em 1.5em 0;
+        margin-bottom: 2em;
     }
 
     .close-modal-icon {
@@ -32,15 +40,15 @@ const Container = styled.div`
         padding: 0.2em;
         margin: 0 0 0 auto;
         display: block;
+        transform: translateX(0.2em);
     }
 
     .close-modal-icon:hover {
         opacity: 0.7;
     }
 
-    .modal-title {
-        margin: 0 0 0.6em 0;
-        font-size: 1.75rem;
+    .modal-content {
+        padding: 0 1.5em;
     }
 
     .modal-subtitle {
@@ -50,7 +58,7 @@ const Container = styled.div`
     }
 
     .code {
-        font-size: 1rem;
+        background: #141414;
     }
 
     .modal-instructions {
@@ -58,14 +66,14 @@ const Container = styled.div`
     }
 
     .code-example {
-        background: white;
+        background: #141414;
         padding: 0.2em 0.4em;
         font-weight: 600;
         border-radius: 5px;
     }
 
     .form {
-        margin-top: 1em;
+        padding: 0 1.5em;
     }
 
     label {
@@ -91,33 +99,41 @@ const Container = styled.div`
         width: 100%;
         margin-top: 0.5em;
         text-indent: 6px;
-        padding: 0.7em 0.5em;
-        border-radius: 5px;
-        border: 1px solid #b1b1b1;
-        font-family: inherit;
-    }
-
-    .submit-button {
-        padding: 0.9em 1em;
-        margin-top: 1.7em;
-        width: 100%;
+        padding: 0.8em;
         border-radius: 5px;
         border: none;
         font-family: inherit;
-        font-size: 1.05rem;
-        font-weight: 600;
-        background-color: #457b9d;
-        color: #ffead0;
-        letter-spacing: 0.3px;
-        transition: all 0.4s ease;
+        color: whitesmoke;
+        background-color: #272d36;
+    }
+
+    .modal-bottom {
+        background-color: #272d36;
+        display: flex;
+        justify-content: end;
+        gap: 10px;
+        margin-top: 2em;
+        padding: 0.7em 1.5em;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .submit-button {
+        border: none;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: white;
+        letter-spacing: 0.2px;
+        border-radius: 5px;
+        display: block;
+        background-color: transparent;
+        padding: 0.5em 1.5em;
+        cursor: pointer;
     }
 
     .submit-button:disabled {
-        cursor: default;
-    }
-
-    .submit-button:hover:not([disabled]) {
-        background-color: #005f73;
+        cursor: not-allowed;
+        opacity: 0.5;
     }
 
     @media (max-width: 550px) {
@@ -208,7 +224,7 @@ const DepositNftModal = ({ openDepositNftModal, setOpenDepositNftModal }) => {
         }))
     }
 
-    const handleSubmit = async (event) => {
+    const handleClick = async (event) => {
         event.preventDefault()
 
         await approve({
@@ -244,17 +260,22 @@ const DepositNftModal = ({ openDepositNftModal, setOpenDepositNftModal }) => {
 
     return (
         <Container>
-            <FaTimes
-                className="close-modal-icon"
-                onClick={() => setOpenDepositNftModal(!openDepositNftModal)}
-            />
-            <h1 className="modal-title">Deposit NFT</h1>
-            <p className="modal-instructions margin-top">
-                Fill the inputs field with contract address and the token ID of
-                the NFT to deposit, according to the examples, then hit the
-                deposit button to transfer the token.
-            </p>
-            <form className="form" onSubmit={handleSubmit}>
+            <div className="modal-header">
+                <h2 className="modal-title">Deposit NFT</h2>
+                <FaTimes
+                    className="close-modal-icon"
+                    onClick={() => setOpenDepositNftModal(!openDepositNftModal)}
+                />
+            </div>
+            <div className="modal-content">
+                <p className="modal-instructions margin-top">
+                    Fill the inputs field with contract address and the token ID
+                    of the NFT to deposit, according to the examples, then hit
+                    the deposit button to transfer the token.
+                </p>
+            </div>
+
+            <form className="form" id="nft-form">
                 <label htmlFor="nftAddress" className="label">
                     NFT address:
                 </label>
@@ -286,6 +307,15 @@ const DepositNftModal = ({ openDepositNftModal, setOpenDepositNftModal }) => {
                     value={formData.tokenId}
                     required
                 />
+            </form>
+            <div className="modal-bottom">
+                <button
+                    onClick={() => setOpenDepositNftModal(!openDepositNftModal)}
+                    className="submit-button"
+                    style={{ backgroundColor: "#3e3e3e" }}
+                >
+                    Cancel
+                </button>
                 <button
                     disabled={
                         isFetchingDepositNft ||
@@ -293,11 +323,14 @@ const DepositNftModal = ({ openDepositNftModal, setOpenDepositNftModal }) => {
                         isFetchingApprove ||
                         isLoadingApprove
                     }
+                    onClick={handleClick}
+                    form="nft-form"
                     className="submit-button"
+                    style={{ backgroundColor: "#1db954" }}
                 >
                     Deposit NFT
                 </button>
-            </form>
+            </div>
         </Container>
     )
 }

@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { FaGithub } from "react-icons/fa"
 import { MdOutlineMail } from "react-icons/md"
 import { SiTwitter } from "react-icons/si"
+import { AiFillThunderbolt, AiFillHeart } from "react-icons/ai"
 
 const Container = styled.div`
     padding: 1.5em 0.8em;

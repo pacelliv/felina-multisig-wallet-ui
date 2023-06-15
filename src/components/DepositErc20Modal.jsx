@@ -1,53 +1,58 @@
 import styled from "styled-components"
 import { FaTimes } from "react-icons/fa"
-import { useState, useContext } from "react"
+import { tokensDetails } from "@/database"
+import { Web3Context } from "@/context/Web3Context"
+import { useContext, useState } from "react"
 import { useWeb3Contract } from "react-moralis"
 import { walletAbi, erc20Abi } from "../constants"
-import { Web3Context } from "@/context/Web3Context"
 import { ethers } from "ethers"
 
 const Container = styled.div`
     position: fixed;
-    max-width: 530px;
-    padding: 1.5em;
+    max-width: 500px;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 99;
     margin: auto;
-    box-shadow: 0px 0px 5px 2px #d0d0d0;
+    box-shadow: 0px 0px 5px 4px #363636;
     border-radius: 10px;
-    background-color: #f1faee;
-    height: 578px;
+    height: ${({ depositTokens }) => (depositTokens ? "578px" : "min-content")};
     overflow-y: auto;
-
-    span {
-        font-weight: 500;
-        text-decoration: none;
-    }
+    background-color: #212121;
+    color: rgb(210, 210, 210);
 
     &::-webkit-scrollbar {
-        width: 7px;
+        width: 0px;
+        z-index: 20;
     }
 
     &::-webkit-scrollbar-track {
-        background: transparent;
+        background: #e5e5e5;
         border-top-right-radius: 10px;
         border-bottom-right-radius: 10px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: ${({ enterMouse }) => enterMouse && "#d1d1d1"};
+        background-color: ${({ enterMouse }) => enterMouse && "#a1a1a1"};
+        background-color: transparent;
         border-radius: 10px;
     }
 
+    .header {
+        display: flex;
+        padding: 2em 2.2em 0;
+        margin-bottom: 1em;
+        align-items: center;
+        justify-content: space-between;
+    }
+
     .close-modal-icon {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         cursor: pointer;
         padding: 0.2em;
-        margin: 0 0 0 auto;
-        display: block;
+        transform: translateX(0.2em);
     }
 
     .close-modal-icon:hover {
@@ -55,26 +60,102 @@ const Container = styled.div`
     }
 
     .modal-title {
-        margin: 0 0 0.6em 0;
-        font-size: 1.75rem;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    .sub-header {
+        margin-bottom: 1em;
+        padding-bottom: 0.8em;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        border-bottom: 1px #2d2d2d solid;
     }
 
     .modal-subtitle {
-        margin: 0 0 0.3em 0;
-        font-size: 1.2rem;
-        font-weight: 600;
+        margin-left: 2.2em;
+        font-size: 0.95rem;
+        font-weight: 400;
+        position: relative;
+        opacity: 0.8;
+    }
+
+    .modal-subtitle:last-child {
+        margin-left: 0.5em;
+    }
+
+    .active {
+        color: white;
+        opacity: 1;
+    }
+
+    .active::before {
+        content: "";
+        position: absolute;
+        height: 5px;
+        background-color: #12ba4d;
+        width: 100%;
+        top: 27px;
+        left: 0;
+    }
+
+    .token-content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 0px;
+        justify-content: space-evenly;
+        padding: 0 1.5em;
+    }
+
+    .token-container {
+        padding: 2em;
+        width: 100px;
+        height: 100px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: rgb(210, 210, 210);
+        border: 1px solid #2d2d2d;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        opacity: 0.8;
+    }
+
+    .token-container:hover {
+        opacity: 1;
+        border: 1px solid #dddddd;
+    }
+
+    .token-logo {
+        width: 32px;
+    }
+
+    .token-name {
+        font-weight: 500;
+        letter-spacing: 0.2px;
+        font-size: 1.03rem;
+    }
+
+    .modal-inner {
+        display: flex;
+        flex-direction: column;
+        padding: 0 0.6em;
     }
 
     .modal-details-container {
         border-radius: 10px;
         padding: 1em;
-        background-color: white;
-        color: #3d3d3d;
+        background-color: #272d36;
+        letter-spacing: 0.2px;
     }
 
     .modal-detail {
         line-height: 1.4;
-        margin-bottom: 1em;
+        margin-bottom: 0.7em;
         word-wrap: break-word;
     }
 
@@ -95,8 +176,8 @@ const Container = styled.div`
     }
 
     .modal-detail-logo {
-        width: 35px;
-        height: 35px;
+        width: 32px;
+        height: 32px;
     }
 
     .code {
@@ -107,15 +188,12 @@ const Container = styled.div`
         text-transform: uppercase;
     }
 
-    .modal-instructions {
-        line-height: 1.5;
-    }
-
     .code-example {
-        background: white;
+        background: #141414;
         padding: 0.2em 0.4em;
         font-weight: 600;
         border-radius: 5px;
+        color: whitesmoke;
     }
 
     .form {
@@ -145,70 +223,49 @@ const Container = styled.div`
         width: 100%;
         margin-top: 0.5em;
         text-indent: 6px;
-        padding: 0.7em 0.5em;
-        border-radius: 5px;
-        border: 1px solid #b1b1b1;
-        font-family: inherit;
-    }
-
-    .icon {
-        color: white;
-        font-size: 1.2rem;
-        font-weight: 900;
-    }
-
-    .submit-button {
-        padding: 0.9em 1em;
-        margin-top: 1.7em;
-        width: 100%;
+        padding: 0.8em;
         border-radius: 5px;
         border: none;
         font-family: inherit;
-        font-size: 1.05rem;
-        font-weight: 600;
-        background-color: #457b9d;
-        color: #ffead0;
-        letter-spacing: 0.3px;
-        transition: all 0.4s ease;
+        color: whitesmoke;
+        background-color: #272d36;
+    }
+
+    .modal-bottom {
+        background-color: #272d36;
+        display: flex;
+        justify-content: end;
+        gap: 10px;
+        margin: 1.8em 0 0 0;
+        padding: 0.7em 2.2em;
+    }
+
+    .submit-button {
+        border: none;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: white;
+        letter-spacing: 0.2px;
+        border-radius: 5px;
+        display: block;
+        background-color: transparent;
+        padding: 0.5em 1.2em;
+        cursor: pointer;
     }
 
     .submit-button:disabled {
-        cursor: default;
-    }
-
-    .submit-button:hover:not([disabled]) {
-        background-color: #005f73;
-    }
-
-    @media (max-width: 550px) {
-        margin: auto 0.8em;
-    }
-
-    @media (max-width: 492px) {
-        overflow-y: scroll;
-
-        &::-webkit-scrollbar {
-            width: 7px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: transparent;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background-color: ${({ enterMouse }) => enterMouse && "#d1d1d1"};
-            border-radius: 10px;
-        }
+        cursor: not-allowed;
+        opacity: 0.5;
     }
 `
 
 const DepositErc20Modal = ({
     openDepositErc20Modal,
     setOpenDepositErc20Modal,
-    token,
 }) => {
+    const { network } = useContext(Web3Context)
+    const [depositTokens, setDepositTokens] = useState(false)
+    const [token, setToken] = useState({})
     const { contractAddress } = useContext(Web3Context)
     const [enterMouse, setEnterMouse] = useState(false)
     const [formData, setFormData] = useState({
@@ -257,7 +314,7 @@ const DepositErc20Modal = ({
         }))
     }
 
-    const handleSubmit = async (event) => {
+    const handleClick = async (event) => {
         event.preventDefault()
         await approve({
             onSuccess: handleSuccessApprove,
@@ -290,70 +347,173 @@ const DepositErc20Modal = ({
             onMouseOver={() => setEnterMouse(true)}
             onMouseLeave={() => setEnterMouse(false)}
             enterMouse={enterMouse}
+            depositTokens={depositTokens}
         >
-            <FaTimes
-                className="close-modal-icon"
-                onClick={() => setOpenDepositErc20Modal(!openDepositErc20Modal)}
-            />
-            <h1 className="modal-title">Deposit ERC20 token</h1>
-            <h3 className="modal-subtitle">Selected token:</h3>
-            <div className="modal-details-container">
-                <div className="modal-detail-logo-container">
-                    <p className="modal-detail margin-bottom">
-                        <span>Logo:</span>{" "}
-                    </p>
-                    <img src={`${token.image}`} className="modal-detail-logo" />
-                </div>
-                <p className="modal-detail">
-                    <span>Contract address:</span>{" "}
-                    <code className="code">{token.contractAddress}</code>
-                </p>
-                <p className="modal-detail">
-                    <span>Token name:</span>{" "}
-                    <code className="code">{token.name}</code>{" "}
-                </p>
-                <p className="modal-detail">
-                    <span>Token symbol:</span>{" "}
-                    <code className="code uppercase">{token.symbol}</code>
-                </p>
-                <p className="modal-detail">
-                    <span>Decimal places:</span>{" "}
-                    <code className="code">{token.decimals}</code>
-                </p>
-            </div>
-            <p className="modal-instructions margin-top">
-                Input the amount of tokens to deposit according to the examples
-                and then click the deposit button.
-            </p>
-            <form className="form" onSubmit={handleSubmit}>
-                <label htmlFor="amount" className="label">
-                    Amount:
-                </label>
-                <label htmlFor="amount" className="example">
-                    Examples: <code className="code-example">1</code>,{" "}
-                    <code className="code-example">1.5</code> or{" "}
-                    <code className="code-example">1000</code>
-                </label>
-                <input
-                    onChange={handleChange}
-                    type="text"
-                    id="amount"
-                    name="amount"
-                    value={formData.amount}
-                    required
+            <div className="header">
+                <h2 className="modal-title">Deposit tokens</h2>
+                <FaTimes
+                    className="close-modal-icon"
+                    onClick={() =>
+                        setOpenDepositErc20Modal(!openDepositErc20Modal)
+                    }
                 />
+            </div>
+            <div className="sub-header">
+                <h3
+                    className={`${
+                        !depositTokens
+                            ? "modal-subtitle active"
+                            : "modal-subtitle"
+                    }`}
+                >
+                    Select
+                </h3>
+                <h3
+                    className={`${
+                        depositTokens
+                            ? "modal-subtitle active"
+                            : "modal-subtitle"
+                    }`}
+                >
+                    Transfer
+                </h3>
+            </div>
+            <div className="token-content">
+                {!depositTokens ? (
+                    tokensDetails.tokensDetails.map(
+                        (
+                            {
+                                symbol,
+                                name,
+                                image,
+                                decimal_place,
+                                contract_addresses,
+                            },
+                            i
+                        ) => (
+                            <div
+                                key={i}
+                                className="token-container"
+                                onClick={() => {
+                                    setDepositTokens(!depositTokens)
+                                    setToken({
+                                        symbol: symbol,
+                                        name: name,
+                                        image: image.small,
+                                        decimals: decimal_place,
+                                        contractAddress:
+                                            contract_addresses[network],
+                                    })
+                                }}
+                            >
+                                <img
+                                    src={`${image.small}`}
+                                    className="token-logo"
+                                />
+                                <p className="token-name">
+                                    {symbol.toUpperCase()}
+                                </p>
+                            </div>
+                        )
+                    )
+                ) : (
+                    <div className="modal-inner">
+                        <div className="modal-details-container">
+                            <div className="modal-detail-logo-container">
+                                <p className="modal-detail margin-bottom">
+                                    <span>Logo:</span>{" "}
+                                </p>
+                                <img
+                                    src={`${token.image}`}
+                                    className="modal-detail-logo"
+                                />
+                            </div>
+                            <p className="modal-detail">
+                                <span>Contract address:</span>{" "}
+                                <code className="code">
+                                    {token.contractAddress}
+                                </code>
+                            </p>
+                            <p className="modal-detail">
+                                <span>Token name:</span>{" "}
+                                <code className="code">{token.name}</code>{" "}
+                            </p>
+                            <p className="modal-detail">
+                                <span>Token symbol:</span>{" "}
+                                <code className="code uppercase">
+                                    {token.symbol}
+                                </code>
+                            </p>
+                            <p className="modal-detail">
+                                <span>Decimal places:</span>{" "}
+                                <code className="code">{token.decimals}</code>
+                            </p>
+                        </div>
+                        <p className="modal-instructions margin-top">
+                            Input the amount of tokens to deposit according to
+                            the examples and then click the deposit button.
+                        </p>
+                        <form className="form" id="deposit-form">
+                            <label htmlFor="amount" className="label">
+                                Amount:
+                            </label>
+                            <label htmlFor="amount" className="example">
+                                Examples:{" "}
+                                <code className="code-example">1</code>,{" "}
+                                <code className="code-example">1.5</code> or{" "}
+                                <code className="code-example">1000</code>
+                            </label>
+                            <input
+                                onChange={handleChange}
+                                type="text"
+                                id="amount"
+                                name="amount"
+                                value={formData.amount}
+                                required
+                            />
+                        </form>
+                    </div>
+                )}
+            </div>
+            <div className="modal-bottom">
                 <button
+                    onClick={() => setDepositTokens(!depositTokens)}
+                    className="submit-button"
+                    style={{
+                        backgroundColor: "#3e3e3e",
+                        display: depositTokens ? "block" : "none",
+                        margin: "0 auto 0 0",
+                    }}
+                >
+                    Back
+                </button>
+                <button
+                    onClick={() =>
+                        setOpenDepositErc20Modal(!openDepositErc20Modal)
+                    }
+                    className="submit-button"
+                    style={{ backgroundColor: "#3e3e3e" }}
+                >
+                    Cancel
+                </button>
+                <button
+                    onClick={handleClick}
+                    className="submit-button"
+                    style={{
+                        backgroundColor: "#1db954",
+                        display: depositTokens ? "block" : "none",
+                    }}
                     disabled={
                         isFetchingDepositErc20 ||
                         isLoadingDepositErc20 ||
                         isFetchingApprove ||
                         isLoadingApprove
                     }
-                    className="submit-button"
+                    form="deposit-form"
                 >
-                    Deposit tokens
+                    Deposit
                 </button>
-            </form>
+            </div>
         </Container>
     )
 }

@@ -23,7 +23,8 @@ const Container = styled.div`
         left: 0;
         width: 100vw;
         height: 100vh;
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(0.1rem);
         z-index: 20;
     }
 `
@@ -40,14 +41,23 @@ const Div = styled.div`
     .nft-card {
         border-radius: 10px;
         padding: 1.2em 1.2em;
-        background-color: #ffead0;
-        color: #4d4d4d;
+        color: #e4e4e4;
         transition: all 0.4s ease;
         max-width: 250.7px;
+        background: linear-gradient(
+            to left bottom,
+            rgba(99, 99, 125, 0.7),
+            rgba(99, 99, 125, 0.3)
+        );
+        backdrop-filter: blur(1rem);
     }
 
     .nft-card:hover {
-        background-color: #ffe0b9;
+        background: linear-gradient(
+            to left bottom,
+            rgba(85, 85, 110, 0.7),
+            rgba(85, 85, 110, 0.3)
+        );
     }
 
     .width {
@@ -59,12 +69,14 @@ const Div = styled.div`
         display: flex;
         align-items: center;
         justify-content: space-between;
+        color: white;
     }
 
     .nft-name {
         font-family: "Permanent Marker", sans-serif;
         font-size: 0.9rem;
         font-weight: 600;
+        letter-spacing: 0.5px;
     }
 
     .image-container {
@@ -119,6 +131,7 @@ const Div = styled.div`
     .icon {
         font-size: 16px;
         pointer-events: none;
+        color: #e4e4e4;
     }
 
     .show {
@@ -133,6 +146,7 @@ const Div = styled.div`
 const Title = styled.h1`
     margin-top: 1.2em;
     font-size: 1.8rem;
+    color: white;
 `
 
 const ButtonsContainer = styled.div`
@@ -142,33 +156,26 @@ const ButtonsContainer = styled.div`
     gap: 15px;
 
     .button {
-        padding: 0.5em 1em;
-        border-radius: 5px;
+        padding: 0.6em 1em;
+        border-radius: 7px;
         border: none;
         font-size: 1rem;
         font-weight: 500;
-        color: #ffead0;
+        color: white;
         transition: 200ms all cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.2px;
     }
 
     .button:disabled {
         cursor: default;
     }
 
-    .red {
-        background-color: #d54b4b;
+    .blue {
+        background-color: #0066ff;
     }
 
-    .red:hover:not([disabled]) {
-        background-color: #ba2e2e;
-    }
-
-    .green {
-        background-color: #115e59;
-    }
-
-    .green:hover:not([disabled]) {
-        background-color: #0f3b38;
+    .blue:hover:not([disabled]) {
+        background-color: #0850bb;
     }
 `
 
@@ -194,19 +201,19 @@ const Nfts = () => {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled) {
-            setLoading(true)
-            const fetchOwnedNfts = async () => {
-                await checkNftDepositEvent()
-                return await getNfts()
-            }
-            fetchOwnedNfts()
-                .then((ownedNfts) => {
-                    setNfts(ownedNfts)
-                    setLoading(false)
-                })
-                .catch((error) => console.log(error))
+        // if (isWeb3Enabled) {
+        setLoading(true)
+        const fetchOwnedNfts = async () => {
+            await checkNftDepositEvent()
+            return await getNfts()
         }
+        fetchOwnedNfts()
+            .then((ownedNfts) => {
+                setNfts(ownedNfts)
+                setLoading(false)
+            })
+            .catch((error) => console.log(error))
+        //}
     }, [isWeb3Enabled])
 
     return (
@@ -226,7 +233,7 @@ const Nfts = () => {
                         onClick={() =>
                             setOpenDepositNftModal(!openDepositNftModal)
                         }
-                        className="button red"
+                        className="button blue"
                         disabled={openDepositNftModal}
                     >
                         Deposit NFT

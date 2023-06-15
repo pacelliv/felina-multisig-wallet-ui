@@ -23,7 +23,8 @@ const Container = styled.div`
         left: 0;
         width: 100vw;
         height: 100vh;
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(0.1rem);
         z-index: 20;
     }
 
@@ -34,17 +35,31 @@ const Container = styled.div`
         margin: 0.4em 0;
         border-radius: 10px;
         padding: 1.2em 1em 1.2em 0.9em;
-        background-color: #ffead0;
-        color: #4d4d4d;
+        color: #e4e4e4;
         cursor: pointer;
         transition: all 0.4s ease;
         position: relative;
+        background: linear-gradient(
+            to left bottom,
+            rgba(99, 99, 125, 0.7),
+            rgba(99, 99, 125, 0.3)
+        );
+        backdrop-filter: blur(1rem);
+    }
+
+    .transaction-card:hover {
+        background: linear-gradient(
+            to left bottom,
+            rgba(85, 85, 110, 0.7),
+            rgba(85, 85, 110, 0.3)
+        );
     }
 `
 
 const Title = styled.h1`
     margin-top: 1.2em;
     font-size: 1.8rem;
+    color: white;
 `
 
 const ButtonsContainer = styled.div`
@@ -54,33 +69,35 @@ const ButtonsContainer = styled.div`
     gap: 15px;
 
     .button {
-        padding: 0.5em 1em;
-        border-radius: 5px;
+        padding: 0.6em 1em;
+        border-radius: 7px;
         border: none;
         font-size: 1rem;
         font-weight: 500;
-        color: #ffead0;
+        color: white;
         transition: 200ms all cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.2px;
     }
 
     .button:disabled {
         cursor: default;
     }
 
-    .orange {
-        background-color: #e17654;
+    .blue {
+        background-color: #0066ff;
     }
 
-    .orange:hover:not([disabled]) {
-        background-color: #904832;
+    .blue:hover:not([disabled]) {
+        background-color: #0850bb;
     }
 
-    .green {
-        background-color: #115e59;
+    .transparent {
+        background-color: transparent;
+        border: 1px solid #474747;
     }
 
-    .green:hover:not([disabled]) {
-        background-color: #0f3b38;
+    .transparent:hover:not([disabled]) {
+        border: 1px solid #d3d3d3;
     }
 `
 
@@ -151,16 +168,19 @@ const Home = () => {
             const to = event.args[2]
             const data = event.args[3]
 
+            // update `transactions` after a execution
             await updateTransactionDetail(txId)
             const pendingTransactions = await getPendingTransactions()
             setTransactions(pendingTransactions)
 
+            // verify if we made a call to a NFT contract
             const ownedNfts = await getNfts()
             const nft = ownedNfts.find((nft) => nft.nftAddress === to)
 
             if (nft) {
                 const iface = new ethers.utils.Interface(nftAbi)
                 const { name, args } = iface.parseTransaction({ data })
+                // update the owned NFT if we transferred a token
                 if (
                     (name === "safeTransferFrom" || name === "transferFrom") &&
                     args[0] === contractAddress
@@ -172,20 +192,20 @@ const Home = () => {
     }
 
     useEffect(() => {
-        if (isWeb3Enabled) {
-            setLoading(true)
-            const setUpUi = async () => {
-                await listenForEvents()
-                return await getPendingTransactions()
-            }
-            setUpUi()
-                .then((pendingTransactions) => {
-                    setTransactions(pendingTransactions)
-                    setLoading(false)
-                })
-                .catch((error) => console.log(error))
+        //if (isWeb3Enabled) {
+        setLoading(true)
+        const setUpUi = async () => {
+            await listenForEvents()
+            return await getPendingTransactions()
         }
-    }, [isWeb3Enabled])
+        setUpUi()
+            .then((pendingTransactions) => {
+                setTransactions(pendingTransactions)
+                setLoading(false)
+            })
+            .catch((error) => console.log(error))
+        //}
+    }, [isWeb3Enabled, transactions])
 
     return (
         <Container>
@@ -231,22 +251,22 @@ const Home = () => {
                 <Title>Pending transactions:</Title>
                 <ButtonsContainer>
                     <button
+                        onClick={() => setOpenModal(!openModal)}
+                        className="button transparent"
+                        disabled={openModal}
+                    >
+                        Encode data
+                    </button>
+                    <button
                         onClick={() =>
                             setOpenCreateTransactionModal(
                                 !openCreateTransactionModal
                             )
                         }
-                        className="button orange"
+                        className="button blue"
                         disabled={openModal}
                     >
                         Create transaction
-                    </button>
-                    <button
-                        onClick={() => setOpenModal(!openModal)}
-                        className="button green"
-                        disabled={openModal}
-                    >
-                        Encode data
                     </button>
                 </ButtonsContainer>
 

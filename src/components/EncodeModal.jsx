@@ -8,21 +8,21 @@ import { AiOutlineCheck } from "react-icons/ai"
 const Container = styled.div`
     position: fixed;
     max-width: 530px;
-    padding: 1.5em;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 99;
     margin: auto;
-    box-shadow: 0px 0px 5px 2px #d0d0d0;
+    box-shadow: 0px 0px 5px 4px #363636;
     border-radius: 10px;
-    background-color: #f1faee;
+    background-color: #212121;
     height: 578px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    color: rgb(210, 210, 210);
 
     &::-webkit-scrollbar {
-        width: 7px;
+        width: 0px;
     }
 
     &::-webkit-scrollbar-track {
@@ -33,24 +33,31 @@ const Container = styled.div`
 
     &::-webkit-scrollbar-thumb {
         background-color: ${({ enterMouse }) => enterMouse && "#d1d1d1"};
+        background-color: transparent;
         border-radius: 10px;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2em 2em 0;
+        margin-bottom: 2em;
     }
 
     .close-modal-icon {
         font-size: 2.5rem;
         cursor: pointer;
         padding: 0.2em;
-        margin: 0 0 0 auto;
-        display: block;
+        transform: translateX(0.2em);
     }
 
     .close-modal-icon:hover {
         opacity: 0.7;
     }
 
-    .modal-title {
-        margin: 0 0 0.6em 0;
-        font-size: 1.75rem;
+    .modal-content {
+        padding: 0 2em;
     }
 
     .modal-instructions {
@@ -58,14 +65,16 @@ const Container = styled.div`
     }
 
     .code {
-        background: white;
+        background: #141414;
         padding: 0.2em 0.4em;
         font-weight: 600;
         border-radius: 5px;
+        color: whitesmoke;
     }
 
     .form {
         margin-top: 1em;
+        padding: 0 1.5em;
     }
 
     label {
@@ -91,10 +100,12 @@ const Container = styled.div`
         width: 100%;
         margin-top: 0.5em;
         text-indent: 6px;
-        padding: 0.7em 0.5em;
+        padding: 0.8em;
         border-radius: 5px;
-        border: 1px solid #b1b1b1;
+        border: none;
         font-family: inherit;
+        color: whitesmoke;
+        background-color: #272d36;
     }
 
     .display-container {
@@ -134,23 +145,26 @@ const Container = styled.div`
         display: block;
     }
 
-    .submit-button {
-        padding: 0.9em 1em;
+    .modal-bottom {
+        background-color: #272d36;
+        display: flex;
+        justify-content: end;
+        gap: 10px;
         margin-top: 2em;
-        width: 100%;
-        border-radius: 5px;
-        border: none;
-        font-family: inherit;
-        font-size: 1.05rem;
-        font-weight: 600;
-        background-color: #457b9d;
-        color: #ffead0;
-        letter-spacing: 0.3px;
-        transition: all 0.4s ease;
+        padding: 0.7em 1.5em;
     }
 
-    .submit-button:hover {
-        background-color: #005f73;
+    .submit-button {
+        border: none;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: white;
+        letter-spacing: 0.2px;
+        border-radius: 5px;
+        display: block;
+        background-color: transparent;
+        padding: 0.5em 1.5em;
+        cursor: pointer;
     }
 
     @media (max-width: 550px) {
@@ -168,15 +182,15 @@ const EncodeModal = ({ openModal, setOpenModal }) => {
     })
     const [encodedData, setEncodedData] = useState("")
 
-    const handleChange = (e) => {
-        const { name, value } = e.target
+    const handleChange = (event) => {
+        const { name, value } = event.target
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value,
         }))
     }
 
-    const handleSubmit = (event) => {
+    const handleClick = (event) => {
         event.preventDefault()
         const ABI = new Array(formData.abi)
         const iface = new ethers.utils.Interface(ABI)
@@ -192,22 +206,29 @@ const EncodeModal = ({ openModal, setOpenModal }) => {
             onMouseLeave={() => setEnterMouse(false)}
             enterMouse={enterMouse}
         >
-            <FaTimes
-                className="close-modal-icon"
-                onClick={() => setOpenModal(!openModal)}
-            />
-            <h1 className="modal-title">Encode calldata</h1>
-            <p className="modal-instructions">
-                The data is encoded with etherjs{" "}
-                <code className="code">5.7.2</code>, fill the input fields
-                according to the examples to correctly encode the data. Once the
-                data is encoded click on the icon to copy it to the clipboard.
-            </p>
-            <p className="modal-instructions margin-top">
-                To encode the function parameters, type them separated by commas
-                with no space after the commas.
-            </p>
-            <form className="form" onSubmit={handleSubmit}>
+            <div className="modal-header">
+                <h2>Encode calldata</h2>
+                <FaTimes
+                    className="close-modal-icon"
+                    onClick={() => setOpenModal(!openModal)}
+                />
+            </div>
+
+            <div className="modal-content">
+                <p className="modal-instructions">
+                    The data is encoded with etherjs{" "}
+                    <code className="code">5.7.2</code>, fill the input fields
+                    according to the examples to correctly encode the data. Once
+                    the data is encoded click on the icon to copy it to the
+                    clipboard.
+                </p>
+                <p className="modal-instructions margin-top">
+                    To encode the function parameters, type them separated by
+                    commas with no space after the commas.
+                </p>
+            </div>
+
+            <form className="form" id="encode-form">
                 <label htmlFor="abi" className="label">
                     Function ABI:
                 </label>
@@ -279,8 +300,24 @@ const EncodeModal = ({ openModal, setOpenModal }) => {
                         <code className="display-code">{encodedData}</code>
                     </div>
                 </div>
-                <button className="submit-button">Encode</button>
             </form>
+            <div className="modal-bottom">
+                <button
+                    onClick={() => setOpenModal(!openModal)}
+                    className="submit-button"
+                    style={{ backgroundColor: "#3e3e3e" }}
+                >
+                    Cancel
+                </button>
+                <button
+                    onClick={handleClick}
+                    form="encode-form"
+                    className="submit-button"
+                    style={{ backgroundColor: "#1db954" }}
+                >
+                    Encode
+                </button>
+            </div>
         </Container>
     )
 }

@@ -2,109 +2,116 @@ import styled from "styled-components"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { routesItems } from "@/routes/routesItems"
-import { MdClose } from "react-icons/md"
-
-const Divider = styled.div`
-    height: 1px;
-    width: 100%;
-    background-color: #b1b1b1;
-    margin: 1.5em 0;
-    transition: all 0.3s ease;
-`
+import { AiFillThunderbolt, AiFillHeart } from "react-icons/ai"
+import { Web3Context } from "@/context/Web3Context"
+import { useContext } from "react"
 
 const Container = styled.div`
-    background-color: white;
-    height: 100vh;
-    padding: 1.5em 0.5em;
+    background-color: #212121;
+    padding: 1.5em 1em;
     overflow-y: auto;
-
-    .sidebar-title {
-        font-family: "Permanent Marker", sans-serif;
-        letter-spacing: 0.75px;
-        font-weight: 600;
-        display: none;
-        position: absolute;
-        top: 20px;
-        left: 20px;
-    }
+    border-radius: 10px;
+    margin-right: 0.9em;
+    display: flex;
+    flex-direction: column;
 
     .sibebar-logo-link {
-        display: block;
+        display: flex;
+        margin: 0 auto 1em;
+        align-items: center;
+        gap: 7px;
+        color: white;
     }
 
     .sidebar-logo {
-        width: 50px;
-        margin: 0 auto;
+        width: 65px;
         display: block;
     }
 
-    .x-mark {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 30px;
-        font-weight: 900;
-        display: none;
-        cursor: pointer;
+    .sidebar-title {
+        font-family: "Permanent Marker", sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 1px;
     }
 
     .sidebar-links {
         padding: 1em 0.5em;
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         font-weight: bold;
         font-size: 1.1rem;
+        color: #b3b3b3;
         transition: all 0.3s ease;
-        letter-spacing: 0.1px;
+        letter-spacing: 0.5px;
+        border-radius: 10px;
     }
 
     .sidebar-links:hover {
-        background-color: #dfe1d8;
-        padding-left: 1.5em;
+        color: white;
     }
 
     .link-active {
-        color: #d62828;
+        color: white;
     }
 
-    @media (max-width: 870px) {
-        transition: all 0.4s ease;
-        z-index: 20;
-        width: 100%;
-        position: absolute;
-        transform: ${({ isOpen }) =>
-            isOpen ? "translateX(0%)" : "translateX(-100%)"};
+    .link-icon {
+        font-size: 1.7rem;
+    }
 
-        .sidebar-title {
-            display: block;
+    .link-title {
+        font-size: 1rem;
+        margin-top: -5px;
+    }
+
+    .sidebar-message {
+        margin: auto 0 0 0;
+        text-align: center;
+        color: #b3b3b3;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        line-height: 1.4;
+        letter-spacing: 0.1px;
+    }
+
+    @media (max-width: 895px) {
+        .sidebar-logo {
+            width: 50px;
         }
 
-        .sibebar-logo-link {
-            margin-top: 1.5em;
+        .sidebar-links {
+            justify-content: center;
         }
 
-        .x-mark {
-            display: block;
+        .sidebar-message {
+            font-size: 0.5rem;
         }
     }
 `
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
     const router = useRouter()
+    const { windowWidth } = useContext(Web3Context)
 
     return (
         <Container isOpen={isOpen}>
-            <p className="sidebar-title">Felina Wallet &#169;</p>
             <Link
                 href="/"
                 className="sibebar-logo-link"
                 onClick={toggleSidebar}
             >
                 <img className="sidebar-logo" src="../../VF01455.png" />
+                {windowWidth > 895 && (
+                    <div className="sidebar-title">
+                        <p className="sidebar-title">Felina</p>
+                        <p className="sidebar-title">Wallet &#169;</p>
+                    </div>
+                )}
             </Link>
-            <MdClose onClick={toggleSidebar} className="x-mark" />
-            <Divider />
             <div>
-                {routesItems.map(({ title, url, cName }, i) => (
+                {routesItems.map(({ title, icon, url, cName }, i) => (
                     <div key={i} className="link-container">
                         <Link
                             href={url}
@@ -115,10 +122,25 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                             }`}
                             onClick={toggleSidebar}
                         >
-                            {title}
+                            <div className="link-icon">{icon}</div>
+                            {windowWidth > 895 && (
+                                <div className="link-title">{title}</div>
+                            )}
                         </Link>
                     </div>
                 ))}
+            </div>
+            <div className="sidebar-message">
+                {windowWidth > 895 && (
+                    <>
+                        <p>
+                            Made with {<AiFillHeart style={{ color: "red" }} />}{" "}
+                            and{" "}
+                            {<AiFillThunderbolt style={{ color: "yellow" }} />}
+                        </p>
+                        <p>by pacelliv</p>
+                    </>
+                )}
             </div>
         </Container>
     )
