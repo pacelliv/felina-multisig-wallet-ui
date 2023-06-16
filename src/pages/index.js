@@ -205,7 +205,7 @@ const Home = () => {
             })
             .catch((error) => console.log(error))
         //}
-    }, [isWeb3Enabled, transactions])
+    }, [isWeb3Enabled])
 
     return (
         <Container>
